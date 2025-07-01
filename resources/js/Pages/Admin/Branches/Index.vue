@@ -1,18 +1,15 @@
 <template>
   <AdminLayout title="Branches">
-    <template #header>
-      <div class="flex justify-between items-center">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-          Branch Management
-        </h2>
-        <Link :href="route('admin.branches.create')"
-          class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md shadow-sm transition dark:bg-indigo-500 dark:hover:bg-indigo-600">
-        <i class="fas fa-plus mr-2"></i>
-        Add Branch
-        </Link>
-      </div>
-    </template>
-
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+        Branch Management
+      </h2>
+      <Link v-if="props.auth.user.role == 'super_admin'" :href="route('admin.branches.create')"
+        class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md shadow-sm transition dark:bg-indigo-500 dark:hover:bg-indigo-600">
+      <i class="fas fa-plus mr-2"></i>
+      Add Branch
+      </Link>
+    </div>
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -193,6 +190,12 @@ const props = defineProps({
     default: () => ({
       success: null,
       error: null
+    })
+  },
+  auth: {
+    type: Object,
+    default: () => ({
+      user: null
     })
   }
 })

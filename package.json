@@ -23,6 +23,8 @@
         "@headlessui/vue": "^1.7.23",
         "@heroicons/vue": "^2.1.5",
         "aos": "^2.3.4",
+        "dayjs": "^1.11.13",
+        "lodash": "^4.17.21",
         "uuid": "^11.0.2",
         "vuedraggable": "^2.24.3"
     }

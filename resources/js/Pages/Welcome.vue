@@ -17,7 +17,7 @@
           <!-- Navigation -->
           <nav class="container mx-auto px-6 py-8">
             <div class="flex items-center justify-between">
-              <h1 class="text-3xl font-bold text-white dark:text-gray-100">Triple-Taste</h1>
+              <h1 class="text-3xl font-bold text-white dark:text-gray-100">Ghorer Menu</h1>
               <div class="flex items-center gap-4">
                 <div class="hidden md:flex space-x-8 text-white dark:text-gray-300 ml-4">
                   <a href="#about" class="hover:text-orange-400 transition-colors dark:hover:text-orange-300">About</a>
@@ -88,7 +88,7 @@
       <!-- Features Section -->
       <section id="features" class="py-24 bg-orange-50 dark:bg-gray-800" data-aos="fade-up">
         <div class="container mx-auto px-6">
-          <h2 class="text-4xl font-bold text-center mb-16 dark:text-gray-100">Why Choose Triple-Taste</h2>
+          <h2 class="text-4xl font-bold text-center mb-16 dark:text-gray-100">Why Choose Ghorer Menu</h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div
               v-for="(feature, index) in features"
@@ -140,7 +140,7 @@
         <div class="container mx-auto px-6 text-center">
           <h2 class="text-4xl font-bold mb-8">Ready to Experience Premium Food Delivery?</h2>
           <p class="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto dark:text-gray-300">
-            Join thousands of satisfied customers who have made Triple-Taste their preferred choice for premium food delivery.
+            Join thousands of satisfied customers who have made Ghorer Menu their preferred choice for premium food delivery.
           </p>
           <button
             @click="startOrder"
@@ -211,7 +211,7 @@
 <footer class="py-12 bg-gray-900 text-white dark:bg-gray-800">
   <div class="container mx-auto px-6 text-center">
     <p class="text-sm mb-4 dark:text-gray-400">
-      &copy; {{ new Date().getFullYear() }} Triple-Taste. All rights reserved.
+      &copy; {{ new Date().getFullYear() }} Ghorer Menu. All rights reserved.
     </p>
     <div class="flex justify-center space-x-6">
       <a href="#about" class="hover:text-orange-400 transition-colors dark:hover:text-orange-300">About Us</a>

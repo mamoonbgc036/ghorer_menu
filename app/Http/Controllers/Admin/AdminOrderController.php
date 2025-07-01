@@ -11,61 +11,64 @@ use Inertia\Inertia;
 class AdminOrderController extends Controller
 {
     public function index(Request $request)
-{
-    $query = Order::with(['user', 'branch'])
-        ->when($request->search, function ($query, $search) {
-            $query->where('id', 'like', "%{$search}%")
-                ->orWhere('delivery_address', 'like', "%{$search}%")
-                ->orWhereHas('user', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
-        })
-        // Add order type filter
-        ->when($request->order_type, function ($query, $order_type) {
-            $query->where('order_type', $order_type);
-        })
-        ->when($request->status, function ($query, $status) {
-            $query->where('status', $status);
-        })
-        ->when($request->payment_status, function ($query, $payment_status) {
-            $query->where('payment_status', $payment_status);
-        })
-        ->when($request->date_range, function ($query, $date_range) {
-            $dates = explode(' to ', $date_range);
-            $query->whereBetween('created_at', $dates);
-        })
-        ->latest();
+    {
+        $rest_id = $request->user()->rest_id;
+        $query = Order::with(['user', 'branch'])
+            ->when($request->search, function ($query, $search) {
+                $query->where('id', 'like', "%{$search}%")
+                    ->orWhere('delivery_address', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
+            })
+            // Add order type filter
+            ->when($request->order_type, function ($query, $order_type) {
+                $query->where('order_type', $order_type);
+            })
+            ->when($request->status, function ($query, $status) {
+                $query->where('status', $status);
+            })
+            ->when($request->payment_status, function ($query, $payment_status) {
+                $query->where('payment_status', $payment_status);
+            })
+            ->when($request->date_range, function ($query, $date_range) {
+                $dates = explode(' to ', $date_range);
+                $query->whereBetween('created_at', $dates);
+            })
+            ->when($rest_id, function ($query, $rest_id) {
+                $query->where('branch_id', $rest_id);
+            })->latest();
 
-    $orders = $query->paginate(10)
-        ->withQueryString()
-        ->through(fn ($order) => [
-            'id' => $order->id,
-            'user' => [
-                'name' => $order->user->name,
-                'email' => $order->user->email
-            ],
-            'branch' => [
-                'name' => $order->branch->name
-            ],
-            'total_amount' => $order->total_amount,
-            'status' => $order->status,
-            'payment_status' => $order->payment_status,
-            'payment_method' => $order->payment_method,
-            'created_at' => $order->created_at,
-            'estimated_delivery_time' => $order->estimated_delivery_time,
-            'order_type' => $order->order_type, // Add this line
-            'delivery_fee' => $order->delivery_fee // Optional, if you want to show delivery fee
+        $orders = $query->paginate(10)
+            ->withQueryString()
+            ->through(fn($order) => [
+                'id' => $order->id,
+                'user' => [
+                    'name' => $order->user->name,
+                    'email' => $order->user->email
+                ],
+                'branch' => [
+                    'name' => $order->branch->name
+                ],
+                'total_amount' => $order->total_amount,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'payment_method' => $order->payment_method,
+                'created_at' => $order->created_at,
+                'estimated_delivery_time' => $order->estimated_delivery_time,
+                'order_type' => $order->order_type, // Add this line
+                'delivery_fee' => $order->delivery_fee // Optional, if you want to show delivery fee
+            ]);
+
+        return Inertia::render('Admin/Orders/Index', [
+            'orders' => $orders,
+            'filters' => $request->only(['search', 'order_type']), // Update this line
+            'statuses' => Order::getStatuses(),
+            'payment_statuses' => Order::getPaymentStatuses(),
+            'order_types' => ['delivery', 'collection'] // Add this line if you need it
         ]);
-
-    return Inertia::render('Admin/Orders/Index', [
-        'orders' => $orders,
-        'filters' => $request->only(['search', 'order_type']), // Update this line
-        'statuses' => Order::getStatuses(),
-        'payment_statuses' => Order::getPaymentStatuses(),
-        'order_types' => ['delivery', 'collection'] // Add this line if you need it
-    ]);
-}
+    }
     public function show(Order $order)
     {
         $order->load([
@@ -86,7 +89,7 @@ class AdminOrderController extends Controller
                 'branch' => [
                     'name' => $order->branch->name
                 ],
-                'items' => $order->items->map(fn ($item) => [
+                'items' => $order->items->map(fn($item) => [
                     'id' => $item->id,
                     'food' => [
                         'name' => $item->food->name,
@@ -96,7 +99,7 @@ class AdminOrderController extends Controller
                     'unit_price' => $item->unit_price,
                     'subtotal' => $item->subtotal,
                     'special_instructions' => $item->special_instructions,
-                    'extras' => $item->extras->map(fn ($extra) => [
+                    'extras' => $item->extras->map(fn($extra) => [
                         'name' => $extra->extraOption->name,
                         'price' => $extra->extraOption->price
                     ])

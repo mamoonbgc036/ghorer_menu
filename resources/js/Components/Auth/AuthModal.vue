@@ -44,12 +44,12 @@
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Email
+                                        Phone
                                     </label>
-                                    <input type="email" v-model="loginForm.email" required
+                                    <input type="text" v-model="loginForm.phone" required
                                         class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 shadow-sm focus:border-orange-500 focus:ring-orange-500" />
-                                    <div v-if="loginForm.errors.email" class="mt-1 text-sm text-red-600">
-                                        {{ loginForm.errors.email }}
+                                    <div v-if="loginForm.errors.phone" class="mt-1 text-sm text-red-600">
+                                        {{ loginForm.errors.phone }}
                                     </div>
                                 </div>
 
@@ -204,7 +204,7 @@ const emit = defineEmits(['update:modelValue'])
 const activeTab = ref('login')
 
 const loginForm = useForm({
-    email: '',
+    phone: '',
     password: '',
     remember: false,
     redirect_url: props.redirectUrl

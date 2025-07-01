@@ -18,7 +18,7 @@
             <div class="text-white">
               <h1 class="text-4xl font-bold">Create an Account</h1>
               <p class="mt-4 text-lg text-white/90">
-                Join Triple-Taste and discover amazing restaurants in your area
+                Join Ghorer Menu and discover amazing restaurants in your area
               </p>
             </div>
           </div>
@@ -29,7 +29,7 @@
           <div class="w-full max-w-md">
             <!-- Logo for mobile -->
             <div class="lg:hidden text-center mb-8">
-              <img src="/logo.svg" alt="Triple-Taste" class="h-12 mx-auto" />
+              <img src="/logo.svg" alt="Ghorer-Menu" class="h-12 mx-auto" />
             </div>
 
             <div class="text-center mb-8">
@@ -195,7 +195,7 @@
 
             <!-- Additional Info -->
             <p class="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-              By signing up, you agree to receive updates and special offers from Triple-Taste.
+              By signing up, you agree to receive updates and special offers from Ghorer Menu.
             </p>
           </div>
         </div>

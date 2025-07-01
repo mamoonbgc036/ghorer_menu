@@ -25,6 +25,7 @@ class User extends Authenticatable
         'phone',
         'default_address',
         'role',
+        'rest_id'
     ];
 
     /**
@@ -69,6 +70,11 @@ class User extends Authenticatable
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function branch()
+    {
+        return $this->hasOne(Branch::class, 'id', 'rest_id');
     }
 
     public function favoriteFoods()

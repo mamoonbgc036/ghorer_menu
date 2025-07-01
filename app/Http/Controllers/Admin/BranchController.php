@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Branch;
-use App\Http\Requests\BranchRequest;
 use Inertia\Inertia;
+use App\Models\Branch;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\BranchRequest;
 
 class BranchController extends Controller
 {
     public function index()
     {
-        $branches = Branch::query()
-            ->withCount('foods')
-            ->orderBy('name')
-            ->paginate(10);
+        if (auth()->user()->role == 'branch_admin') {
+            $branches = Branch::withCount('foods')->orderBy('name')->where('id', auth()->user()->rest_id)->paginate(10);
+        } else {
+            $branches = Branch::query()
+                ->withCount('foods')
+                ->orderBy('name')
+                ->paginate(10);
+        }
 
         return Inertia::render('Admin/Branches/Index', [
             'branches' => [
@@ -40,7 +45,15 @@ class BranchController extends Controller
 
     public function create()
     {
-        return Inertia::render('Admin/Branches/Form');
+        $cities = DB::table('cities')->select('id', 'name')->orderBy('id', 'desc')->get();
+        $locals = DB::table('locals')->select('id', 'name', 'area_id')->get();
+        return Inertia::render('Admin/Branches/Form', compact('cities', 'locals'));
+    }
+
+    public function get_area($city_id)
+    {
+        $area = DB::table('areas')->where('district_id', $city_id)->select('id', 'name')->get();
+        return response()->json($area);
     }
 
     public function store(BranchRequest $request)
@@ -50,7 +63,7 @@ class BranchController extends Controller
             return redirect()->route('admin.branches.index')
                 ->with('success', 'Branch created successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Error creating branch. Please try again.');
+            return back()->with('error', $e->getMessage());
         }
     }
 

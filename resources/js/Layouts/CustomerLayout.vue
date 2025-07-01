@@ -8,7 +8,7 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0 flex items-center">
                             <Link href="/">
-                            <span class="text-2xl font-bold text-orange-500 dark:text-orange-400">Triple-Taste</span>
+                            <span class="text-2xl font-bold text-orange-500 dark:text-orange-400">Ghorer Menu</span>
                             </Link>
                         </div>
                     </div>
@@ -181,9 +181,9 @@
                     <div>
                         <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Contact</h3>
                         <div class="mt-4 space-y-4">
-                            <p class="text-base text-gray-500 dark:text-gray-400">Triple-Taste Inc.</p>
+                            <p class="text-base text-gray-500 dark:text-gray-400">Ghorer Menu Inc.</p>
                             <p class="text-base text-gray-500 dark:text-gray-400">123 Food Street</p>
-                            <p class="text-base text-gray-500 dark:text-gray-400">contact@tripletaste.com</p>
+                            <p class="text-base text-gray-500 dark:text-gray-400">contact@ghorermenu.com</p>
                         </div>
                     </div>
                 </div>
@@ -191,7 +191,7 @@
                 <!-- Footer Bottom -->
                 <div class="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8">
                     <p class="text-base text-gray-400 text-center">
-                        &copy; {{ new Date().getFullYear() }} Triple-Taste. All rights reserved.
+                        &copy; {{ new Date().getFullYear() }} Ghorer Menu. All rights reserved.
                     </p>
                 </div>
             </div>

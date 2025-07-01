@@ -19,9 +19,9 @@ class FoodMenuController extends Controller
             ->get()
             ->groupBy('category_id');
 
-        $categories = Category::whereHas('foods', function($query) use ($branch) {
+        $categories = Category::whereHas('foods', function ($query) use ($branch) {
             $query->where('branch_id', $branch->id)
-                  ->where('is_available', true);
+                ->where('is_available', true);
         })->get();
 
         return Inertia::render('Customer/FoodMenu', [

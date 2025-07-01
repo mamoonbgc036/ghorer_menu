@@ -16,10 +16,18 @@ class FoodController extends Controller
 {
     public function index()
     {
-        $foods = Food::with(['category', 'branch', 'extraOptions'])
-            ->withCount('extraOptions')
-            ->orderBy('name')
-            ->paginate(10);
+
+        if (auth()->user()->role == 'super_admin') {
+            $foods = Food::with(['category', 'branch', 'extraOptions'])
+                ->withCount('extraOptions')
+                ->orderBy('name')
+                ->paginate(10);
+        } else {
+            $foods = Food::with(['category', 'branch', 'extraOptions'])->where('branch_id', auth()->user()->branch->id)
+                ->withCount('extraOptions')
+                ->orderBy('name')
+                ->paginate(10);
+        }
 
         return Inertia::render('Admin/Foods/Index', [
             'foods' => [
@@ -81,7 +89,6 @@ class FoodController extends Controller
 
             return redirect()->route('admin.foods.index')
                 ->with('success', 'Food item created successfully.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             if (isset($validated['image_path'])) {
@@ -149,7 +156,6 @@ class FoodController extends Controller
 
             return redirect()->route('admin.foods.index')
                 ->with('success', 'Food item updated successfully.');
-
         } catch (\Exception $e) {
             DB::rollBack();
             if (isset($validated['image_path'])) {

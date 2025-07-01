@@ -24,6 +24,7 @@ class Order extends Model
         'status',
         'payment_status',
         'payment_method',
+        'paymentRef',
         'delivery_notes',
         'estimated_delivery_time'
     ];

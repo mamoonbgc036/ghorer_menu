@@ -5,14 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderItemExtra;
-use App\Models\Food;
 use App\Models\ExtraOption;
 use App\Models\UserAddress;
-use App\Events\OrderCreated;
 use App\Models\Branch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Carbon\Carbon;
@@ -57,6 +54,7 @@ class CheckoutController extends Controller
                 'status' => 'pending',
                 'payment_status' => 'pending',
                 'payment_method' => $request->payment_method,
+                'paymentRef' => $request->paymentRef,
                 'estimated_delivery_time' => Carbon::now()->addMinutes($request->order_type === 'delivery' ? 45 : 20),
             ];
 
@@ -129,7 +127,6 @@ class CheckoutController extends Controller
             return redirect()->route('customer.orders.show', [
                 'order' => $order->id
             ])->with('success', 'Order placed successfully!');
-
         } catch (\Exception $e) {
             DB::rollBack();
             \Log::error('Order Creation Error:', [
@@ -224,7 +221,7 @@ class CheckoutController extends Controller
         }
     }
 
-        /**
+    /**
      * Store a new delivery address for the authenticated user.
      */
     public function storeAddress(Request $request)
@@ -258,10 +255,8 @@ class CheckoutController extends Controller
             \DB::commit();
 
             return back()->with('success', 'Address saved successfully');
-
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
-
         } catch (\Exception $e) {
             \DB::rollBack();
             return back()->with('error', 'Failed to save address');
@@ -306,13 +301,11 @@ class CheckoutController extends Controller
                 'message' => 'Address updated successfully',
                 'address' => $address
             ]);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (\Exception $e) {
             \DB::rollBack();
 
@@ -354,7 +347,6 @@ class CheckoutController extends Controller
             return response()->json([
                 'message' => 'Address deleted successfully'
             ]);
-
         } catch (\Exception $e) {
             \DB::rollBack();
 
@@ -392,7 +384,6 @@ class CheckoutController extends Controller
                 'message' => 'Default address updated successfully',
                 'address' => $address
             ]);
-
         } catch (\Exception $e) {
             \DB::rollBack();
 

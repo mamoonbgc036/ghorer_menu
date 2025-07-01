@@ -2,336 +2,341 @@
   <CustomerLayout>
     <!-- Hero Section -->
     <div
-      class="relative flex items-center justify-center min-h-[calc(100vh-4rem)] bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+      class="relative flex items-center justify-center bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-visible"
+    >
       <!-- Background Pattern -->
       <div class="absolute inset-0 z-0">
         <div
-          class="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-purple-500/10 dark:from-orange-900/20 dark:to-purple-900/20">
-        </div>
+          class="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-purple-500/10 dark:from-orange-900/20 dark:to-purple-900/20"
+        ></div>
         <div class="absolute inset-0 bg-grid-pattern opacity-[0.07] dark:opacity-[0.03]"></div>
       </div>
 
       <!-- Floating Elements -->
       <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div v-for="(item, index) in floatingItems" :key="index" :class="item.class"
-          class="absolute opacity-[0.15] dark:opacity-[0.08]">
+        <div
+          v-for="(item, index) in floatingItems"
+          :key="index"
+          :class="item.class"
+          class="absolute opacity-[0.15] dark:opacity-[0.08]"
+        >
           <i :class="item.icon + ' text-5xl md:text-7xl text-orange-600 dark:text-orange-400'"></i>
         </div>
       </div>
 
       <!-- Main Content -->
-      <div class="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+      <div class="relative z-10 w-full max-w-6xl mx-auto m-0 p-5">
         <div class="text-center space-y-8">
           <!-- Main Heading -->
           <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight">
             <span
-              class="block text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-500 dark:to-red-500 animate-gradient pb-2">
-              Delicious Food
-            </span>
-            <span class="block text-gray-900 dark:text-white">
-              Delivered To Your Door
-            </span>
+              class="block text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-500 dark:to-red-500 animate-gradient pb-2"
+            >Delicious Food</span>
+            <span class="block text-gray-900 dark:text-white">Delivered To Your Door</span>
           </h1>
 
           <!-- Subheading -->
-          <p class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed">
-            Experience the finest restaurants in your area with our quick and reliable delivery service.
-          </p>
+          <p
+            class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed"
+          >Experience the finest restaurants in your area with our quick and reliable delivery service.</p>
 
           <!-- CTA Button -->
-          <div class="pt-4">
-            <Link :href="route('customer.locations')"
-              class="group relative inline-flex items-center justify-center overflow-hidden rounded-full p-0.5 font-bold text-lg focus:outline-none focus:ring-4 focus:ring-orange-500/50 dark:focus:ring-orange-500/30">
-            <span class="absolute h-full w-full bg-gradient-to-br from-orange-500 to-red-600"></span>
-            <span
-              class="relative flex items-center justify-center space-x-2 rounded-full bg-white dark:bg-gray-900 px-10 py-4 transition-all duration-300 ease-out group-hover:bg-opacity-0">
-              <span class="text-orange-600 dark:text-orange-400 group-hover:text-white transition-colors">
-                Order Now
-              </span>
-              <i
-                class="fas fa-arrow-right text-orange-600 dark:text-orange-400 group-hover:text-white transition-colors"></i>
-            </span>
-            </Link>
-          </div>
-
-          <!-- Features -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8 pt-20">
-            <div v-for="(feature, index) in features" :key="index" class="relative" :data-aos="feature.aos"
-              :data-aos-delay="feature.delay">
-              <div
-                class="group h-full flex flex-col items-center p-8 bg-white dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-xl dark:shadow-gray-900/10 transition-all duration-300 hover:-translate-y-1">
-                <div
-                  class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-500/10 to-red-500/10 dark:from-orange-500/20 dark:to-red-500/20 group-hover:from-orange-500/20 group-hover:to-red-500/20 transition-all duration-300">
-                  <i :class="feature.icon + ' text-3xl text-orange-600 dark:text-orange-400'"></i>
-                </div>
-                <h3 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">
-                  {{ feature.title }}
-                </h3>
-                <p class="mt-4 text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {{ feature.description }}
-                </p>
-              </div>
-            </div>
+          <!-- Search Field -->
+          <div class="relative max-w-xl mx-auto">
+            <input
+              type="text"
+              v-model="searchQuery"
+              @input="check"
+              placeholder="type your local area"
+              class="text-center w-full rounded-full border-2 border-orange-500 dark:border-orange-400 px-6 py-4 text-lg text-gray-900 dark:text-white bg-white dark:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-orange-500/50 dark:focus:ring-orange-400/30 transition duration-300"
+            />
+            <ul
+              v-if="searchQuery.length > 0 && showDropDown"
+              class="mt-2 absolute w-full text-center bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-md z-50"
+            >
+              <li
+                v-for="(local, index) in filterLocal"
+                :key="index"
+                @click="selectedArea(local)"
+                class="text-gray-700 cursor-pointer dark:text-gray-300 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded z-50"
+              >{{ local.name }}</li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
+    <TransitionGroup name="list" tag="div" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-3">
+      <div
+        v-for="branch in filteredBranches"
+        :key="branch.id"
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700"
+        data-aos="fade-up"
+      >
+        <!-- Status Badge -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex justify-between items-start">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ branch.name }}</h3>
+            <span
+              :class="[
+                                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
+                                    isOpen(branch.opening_hours)
+                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
+                                        : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+                                ]"
+            >
+              {{
+              isOpen(branch.opening_hours)
+              ? "Open Now"
+              : "Closed"
+              }}
+            </span>
+          </div>
 
-    <!-- How It Works Section -->
-    <section class="py-20 bg-gray-50 dark:bg-gray-900">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-            How It Works
-          </h2>
-          <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
-            Get your favorite food in 3 simple steps
-          </p>
+          <address
+            class="mt-2 text-sm text-gray-500 dark:text-gray-400 not-italic"
+          >{{ branch.address }}</address>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div v-for="step in steps" :key="step.id" class="relative" data-aos="fade-up" :data-aos-delay="step.delay">
-            <div class="flex flex-col items-center text-center">
-              <div
-                class="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900/50 flex items-center justify-center mb-6">
-                <i :class="step.icon + ' text-2xl text-orange-600 dark:text-orange-400'"></i>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                {{ step.title }}
-              </h3>
-              <p class="text-gray-600 dark:text-gray-400">
-                {{ step.description }}
-              </p>
+        <!-- Branch Details -->
+        <div class="p-4 space-y-4">
+          <!-- Distance & Delivery Info -->
+          <div class="flex items-center justify-between text-sm">
+            <span class="inline-flex items-center text-gray-500 dark:text-gray-400">
+              <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>
+              {{ formatDistance(branch.distance) }}
+            </span>
+            <span class="inline-flex items-center text-gray-500 dark:text-gray-400">
+              <i class="fas fa-truck text-indigo-500 mr-2"></i>
+              Up to {{ branch.delivery_radius }}km
+            </span>
+          </div>
+
+          <!-- Contact -->
+          <div class="text-sm text-gray-500 dark:text-gray-400">
+            <i class="fas fa-phone text-indigo-500 mr-2"></i>
+            {{ branch.contact_number }}
+          </div>
+          <!-- Opening Hours -->
+          <div class="space-y-2">
+            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Opening Hours</h4>
+            <div class="max-h-64 overflow-y-auto scrollbar-thin">
+              <table class="w-full text-sm text-left">
+                <thead
+                  class="text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600"
+                >
+                  <tr>
+                    <th class="py-2 px-4 text-left">
+                      <i class="fas fa-calendar-day mr-1 text-blue-500"></i>
+                      Day
+                    </th>
+                    <th class="py-2 px-4 text-center">
+                      <i class="fas fa-coffee mr-1 text-yellow-500"></i>
+                      Breakfast
+                    </th>
+                    <th class="py-2 px-4 text-center">
+                      <i class="fas fa-utensils mr-1 text-blue-600"></i>
+                      Lunch
+                    </th>
+                    <th class="py-2 px-4 text-center">
+                      <i class="fas fa-moon mr-1 text-purple-500"></i>
+                      Dinner
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="hours in branch.opening_hours"
+                    :key="hours.day"
+                    class="text-gray-500 dark:text-gray-400"
+                  >
+                    <td class="py-2 pr-4">{{ hours.day }}</td>
+                    <td class="py-2">
+                      {{
+                      formatTime(
+                      hours.breakfast.start
+                      )
+                      }}
+                      -
+                      {{
+                      formatTime(
+                      hours.breakfast.end
+                      )
+                      }}
+                    </td>
+                    <td class="py-2">
+                      {{ formatTime(hours.lunch.start) }}
+                      -
+                      {{
+                      formatTime(hours.lunch.end)
+                      }}
+                    </td>
+                    <td class="py-2">
+                      {{
+                      formatTime(
+                      hours.dinner.start
+                      )
+                      }}
+                      -
+                      {{
+                      formatTime(hours.dinner.end)
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- Popular Categories -->
-    <section class="py-20 bg-white dark:bg-gray-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-            Popular Categories
-          </h2>
-          <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
-            Explore our wide variety of cuisines
-          </p>
-        </div>
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+            <Link
+              :href="
+                                    route('customer.branch.menu', {
+                                        branch: branch.id,
+                                        type: 'collection',
+                                    })
+                                "
+              class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-indigo-600 text-sm font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+            >
+              <i class="fas fa-shopping-bag mr-2"></i>
+              Order Now
+            </Link>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-          <div v-for="category in categories" :key="category.id" class="group relative" data-aos="fade-up"
-            :data-aos-delay="category.delay">
-            <div
-              class="flex flex-col items-center p-4 rounded-xl bg-gray-50 dark:bg-gray-700 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300 cursor-pointer">
-              <div
-                class="w-20 h-20 rounded-full bg-white dark:bg-gray-800 p-4 mb-4 group-hover:scale-110 transition-transform duration-300">
-                <img :src="category.image" :alt="category.name" class="w-full h-full object-contain" />
-              </div>
-              <h3 class="text-sm font-medium text-gray-900 dark:text-white text-center">
-                {{ category.name }}
-              </h3>
-            </div>
+            <a
+              :href="getDirectionsUrl(branch)"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
+            >
+              <i class="fas fa-directions mr-2"></i>
+              Directions
+            </a>
           </div>
         </div>
       </div>
-    </section>
-
-    <!-- App Download Section -->
-    <section class="py-20 bg-gradient-to-br from-orange-500 to-red-600 dark:from-orange-900 dark:to-red-900">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div class="text-white">
-            <h2 class="text-3xl sm:text-4xl font-bold mb-6">
-              Download Our Mobile App
-            </h2>
-            <p class="text-lg text-white/90 mb-8">
-              Get the best food delivery experience with our mobile app. Order food, track delivery, and get exclusive
-              offers.
-            </p>
-            <div class="flex flex-wrap gap-4">
-              <button
-                class="flex items-center px-6 py-3 bg-black rounded-lg hover:bg-gray-900 transition-colors duration-300">
-                <i class="fab fa-apple text-2xl mr-3"></i>
-                <div class="text-left">
-                  <div class="text-xs">Download on the</div>
-                  <div class="text-sm font-semibold">App Store</div>
-                </div>
-              </button>
-              <button
-                class="flex items-center px-6 py-3 bg-black rounded-lg hover:bg-gray-900 transition-colors duration-300">
-                <i class="fab fa-google-play text-2xl mr-3"></i>
-                <div class="text-left">
-                  <div class="text-xs">Get it on</div>
-                  <div class="text-sm font-semibold">Google Play</div>
-                </div>
-              </button>
-            </div>
-          </div>
-          <div class="relative" data-aos="fade-left">
-            <img src="/mockup-app.png" alt="Mobile App" class="w-full max-w-sm mx-auto" />
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Newsletter Section -->
-    <section class="py-20 bg-white dark:bg-gray-800">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl mb-4">
-          Stay Updated
-        </h2>
-        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
-          Subscribe to our newsletter for exclusive offers and updates
-        </p>
-        <form @submit.prevent="subscribeNewsletter" class="max-w-md mx-auto flex gap-4">
-          <input type="email" v-model="newsletterEmail" placeholder="Enter your email"
-            class="flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500"
-            required />
-          <button type="submit"
-            class="px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors duration-300">
-            Subscribe
-          </button>
-        </form>
-      </div>
-    </section>
+    </TransitionGroup>
   </CustomerLayout>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
-import CustomerLayout from '@/Layouts/CustomerLayout.vue';
-import { onMounted } from 'vue';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+<script>
+import CustomerLayout from "@/Layouts/CustomerLayout.vue";
+import { Link } from "@inertiajs/vue3";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import "aos/dist/aos.css";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 
-// State
-const newsletterEmail = ref('');
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
-// Floating items configuration
-const floatingItems = [
-  { icon: 'fas fa-pizza-slice', class: 'top-1/4 left-1/4 animate-float-slow' },
-  { icon: 'fas fa-hamburger', class: 'top-1/3 right-1/4 animate-float-slower' },
-  { icon: 'fas fa-ice-cream', class: 'bottom-1/4 left-1/3 animate-float' },
-  { icon: 'fas fa-coffee', class: 'top-1/2 right-1/3 animate-float-slow' },
-  { icon: 'fas fa-utensils', class: 'bottom-1/3 right-1/4 animate-float-slower' },
-];
-
-// Features section
-const features = [
-  {
-    icon: 'fas fa-shipping-fast',
-    title: 'Lightning Fast Delivery',
-    description: 'From kitchen to your doorstep in 30 minutes or less, ensuring your food arrives hot and fresh.',
-    aos: 'fade-up',
-    delay: '0',
+export default {
+  name: "Home",
+  components: {
+    CustomerLayout,
+    Link,
   },
-  {
-    icon: 'fas fa-utensils',
-    title: 'Premium Quality',
-    description: 'Carefully selected restaurants and quality checks ensure you get the best dining experience.',
-    aos: 'fade-up',
-    delay: '100',
+  props: {
+    branches: {
+      type: Array,
+      required: true,
+    },
+    locals: {
+      type: Array,
+      required: true,
+    },
   },
-  {
-    icon: 'fas fa-shield-alt',
-    title: 'Safe & Secure',
-    description: 'Contactless delivery options and secure payment methods for your peace of mind.',
-    aos: 'fade-up',
-    delay: '200',
+  mounted() {
+    AOS.init({
+      duration: 1000,
+      once: true,
+      offset: 50,
+      delay: 50,
+      easing: "ease-in-out",
+    });
+    this.filterLocal = this.locals;
+    this.filteredBranches = this.branches;
   },
-];
-
-// How it works steps
-const steps = [
-  {
-    id: 1,
-    icon: 'fas fa-map-marker-alt',
-    title: 'Choose Location',
-    description: 'Enter your address to find nearby restaurants',
-    delay: 0,
+  data() {
+    return {
+      searchQuery: "",
+      showDropDown: false,
+      filteredBranches: [],
+      filterLocal: [],
+      floatingItems: [
+        {
+          icon: "fas fa-pizza-slice",
+          class: "top-1/4 left-1/4 animate-float-slow",
+        },
+        {
+          icon: "fas fa-hamburger",
+          class: "top-1/3 right-1/4 animate-float-slower",
+        },
+        {
+          icon: "fas fa-ice-cream",
+          class: "bottom-1/4 left-1/3 animate-float",
+        },
+        {
+          icon: "fas fa-coffee",
+          class: "top-1/2 right-1/3 animate-float-slow",
+        },
+        {
+          icon: "fas fa-utensils",
+          class: "bottom-1/3 right-1/4 animate-float-slower",
+        },
+      ],
+    };
   },
-  {
-    id: 2,
-    icon: 'fas fa-utensils',
-    title: 'Select Food',
-    description: 'Browse menus and select your favorite dishes',
-    delay: 100,
+  methods: {
+    check() {
+      this.showDropDown = true;
+      this.filteredBranches = this.branches;
+      const query = this.searchQuery.toLowerCase();
+      this.filterLocal = this.locals.filter((local) =>
+        local.name.toLowerCase().includes(query)
+      );
+    },
+    getDirectionsUrl(branch) {
+      const destination = `${branch.latitude},${branch.longitude}`;
+      return `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+    },
+    isOpen(hours) {
+      if (!hours) return false;
+      const now = new Date();
+      const day = now.toLocaleDateString("en-US", { weekday: "long" });
+      const time = now.toLocaleTimeString("en-US", { hour12: false });
+      const todayHours = hours.find((h) => h.day === day);
+      return todayHours
+        ? time >= todayHours.open && time <= todayHours.close
+        : false;
+    },
+    formatDistance(distance) {
+      if (!distance) return "Distance unknown";
+      return `${distance.toFixed(1)} km away`;
+    },
+    formatTime(time) {
+      return dayjs(`1970-01-01 ${time}`).tz("Asia/Dhaka").format("hh:mm A");
+    },
+    selectedArea(value) {
+      this.searchQuery = value.name;
+      this.showDropDown = false;
+      console.log(value.division_id);
+      if (value.division_id <= 0) {
+        console.log(value);
+        this.filteredBranches = this.branches.filter(
+          (branch) => branch.local_id === value.own_id
+        );
+      } else {
+        this.filteredBranches = this.branches.filter(
+          (branch) => branch.thana_id === value.id
+        );
+      }
+    },
   },
-  {
-    id: 3,
-    icon: 'fas fa-truck',
-    title: 'Get Delivery',
-    description: 'Enjoy your meal delivered right to your door',
-    delay: 200,
-  },
-];
-
-// Popular categories
-const categories = [
-  {
-    id: 1,
-    name: 'Pizza',
-    image: '/icons/pizza.svg',
-    delay: 0,
-  },
-  {
-    id: 2,
-    name: 'Burgers',
-    image: '/icons/burger.svg',
-    delay: 50,
-  },
-  {
-    id: 3,
-    name: 'Sushi',
-    image: '/icons/sushi.svg',
-    delay: 100,
-  },
-  {
-    id: 4,
-    name: 'Italian',
-    image: '/icons/pasta.svg',
-  },
-
-
-
-  {
-    id: 5,
-    name: 'Chinese',
-    image: '/icons/chinese.svg',
-    delay: 150,
-  },
-  {
-    id: 6,
-    name: 'Indian',
-    image: '/icons/indian.svg',
-    delay: 200,
-  }
-];
-
-// Methods
-const subscribeNewsletter = () => {
-  // Handle newsletter subscription
-  console.log('Newsletter subscription:', newsletterEmail.value);
-  // Add your newsletter subscription logic here
-  newsletterEmail.value = '';
-  // Show success message
-  alert('Thanks for subscribing!');
 };
-
-onMounted(() => {
-  // Initialize AOS
-  AOS.init({
-    duration: 1000,
-    once: true,
-    offset: 50,
-    delay: 50,
-    easing: 'ease-in-out',
-  });
-});
 </script>
+
 
 <style scoped>
 /* Background Grid Pattern */
@@ -342,7 +347,6 @@ onMounted(() => {
 
 /* Enhanced Floating Animations */
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
@@ -356,7 +360,6 @@ onMounted(() => {
 }
 
 @keyframes float-slow {
-
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
@@ -370,7 +373,6 @@ onMounted(() => {
 }
 
 @keyframes float-slower {
-
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
@@ -440,13 +442,17 @@ onMounted(() => {
 }
 
 .btn-hover-effect::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   width: 120%;
   height: 120%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 70%
+  );
   transform: translate(-50%, -50%) scale(0);
   transition: transform 0.5s;
 }
@@ -494,10 +500,15 @@ html {
 }
 
 .image-loading::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
   animation: shimmer 1.5s infinite;
 }
 

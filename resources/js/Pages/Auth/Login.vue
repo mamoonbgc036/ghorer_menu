@@ -16,7 +16,7 @@
           />
           <div class="relative z-20 flex flex-col justify-center px-12">
             <div class="text-white">
-              <h1 class="text-4xl font-bold">Welcome to Triple-Taste</h1>
+              <h1 class="text-4xl font-bold">Welcome to Ghorer Menu</h1>
               <p class="mt-4 text-lg text-white/90">
                 Experience the finest food delivery service in your area
               </p>
@@ -29,13 +29,13 @@
           <div class="w-full max-w-md">
             <!-- Logo for mobile -->
             <div class="lg:hidden text-center mb-8">
-              <img src="/logo.svg" alt="Triple-Taste" class="h-12 mx-auto" />
+              <img src="/logo.svg" alt="Ghorer-Menu" class="h-12 mx-auto" />
             </div>
 
             <div class="text-center mb-8">
               <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Sign in</h2>
               <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                New to Triple-Taste?
+                New to Ghorer Menu?
                 <Link :href="route('register')" class="font-medium text-orange-600 hover:text-orange-500">
                   Create an account
                 </Link>
@@ -50,19 +50,20 @@
             <!-- Login Form -->
             <form @submit.prevent="submit" class="space-y-6">
               <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Email address
+                <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Phone Number
                 </label>
                 <input
-                  id="email"
-                  v-model="form.email"
-                  type="email"
+                  id="phone"
+                  v-model="form.phone"
+                  type="text"
+                  placeholder="Enter phone Number"
                   required
                   class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-700 shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-800 dark:text-white"
-                  :class="{ 'border-red-500': form.errors.email }"
+                  :class="{ 'border-red-500': form.errors.phone }"
                 />
-                <div v-if="form.errors.email" class="mt-1 text-sm text-red-600 dark:text-red-400">
-                  {{ form.errors.email }}
+                <div v-if="form.errors.phone" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                  {{ form.errors.phone }}
                 </div>
               </div>
 
@@ -73,6 +74,7 @@
                 <div class="relative">
                   <input
                     id="password"
+                    placeholder="Enter Password"
                     v-model="form.password"
                     :type="showPassword ? 'text' : 'password'"
                     required
@@ -142,7 +144,7 @@
   const showPassword = ref(false)
 
   const form = useForm({
-    email: '',
+    phone: '',
     password: '',
     remember: false,
   })

@@ -23,9 +23,9 @@ class CustomerOrderController extends Controller
     public function show(Order $order)
     {
         // Ensure the order belongs to the authenticated user
-        if ($order->user_id !== auth()->id()) {
-            abort(403);
-        }
+        // if ($order->user_id !== auth()->id()) {
+        //     abort(403);
+        // }
 
         $order->load([
             'branch',

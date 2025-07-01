@@ -20,7 +20,10 @@ class Branch extends Model
         'opening_hours',
         'contact_number',
         'delivery_radius',
-        'is_active'
+        'is_active',
+        'district_id',
+        'thana_id',
+        'local_id'
     ];
 
     protected $casts = [
@@ -138,5 +141,4 @@ class Branch extends Model
     {
         return $this->hasMany(Review::class);
     }
-
 }

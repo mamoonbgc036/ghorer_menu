@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Triple-Taste'),
+    'name' => env('APP_NAME', 'Ghorer-Menu'),
 
     /*
     |--------------------------------------------------------------------------
