@@ -31,14 +31,13 @@
           <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight">
             <span
               class="block text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 dark:from-orange-500 dark:to-red-500 animate-gradient pb-2"
-            >Delicious Food</span>
-            <span class="block text-gray-900 dark:text-white">Delivered To Your Door</span>
+            >Select Your Favourit Food</span>
           </h1>
 
           <!-- Subheading -->
           <p
             class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed"
-          >Experience the finest restaurants in your area with our quick and reliable delivery service.</p>
+          >Within Our Best Restaurants And Catering Servics</p>
 
           <!-- CTA Button -->
           <!-- Search Field -->

@@ -1,8 +1,10 @@
 <?php
 use Inertia\Inertia;
 use App\Models\Branch;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use Stevebauman\Location\Facades\Location;
@@ -23,6 +25,39 @@ Route::get('track', function () {
     $location = Location::get('5.162.104.224');
     dd($location);
 });
+
+Route::get('/sso-login', function (Request $request) {
+    // Step 1: Check expiration
+    if ($request->expires < now()->timestamp) {
+        abort(403, 'Link expired');
+    }
+
+    // Step 2: Verify signature
+    $originalUrl = $request->url(); // without query
+    $query = http_build_query([
+        'phone' => $request->phone,
+        'name' => $request->name,
+        'password' => $request->password,
+        'expires' => $request->expires,
+    ]);
+
+    $expectedSignature = hash_hmac('sha256', $originalUrl . '?' . $query, config('app.key'));
+
+    if (!hash_equals($expectedSignature, $request->signature)) {
+        abort(403, 'Invalid signature');
+    }
+
+    // Step 3: Create or login user
+    $user = \App\Models\User::firstOrCreate(
+        ['phone' => $request->phone],
+        ['name' => $request->name ?? 'Your Name', 'password' => $request->password]
+    );
+
+    Auth::login($user);
+
+    return redirect('/');
+});
+
 
 Route::get('/welcome', function () {
     return Inertia::render('Welcome', [

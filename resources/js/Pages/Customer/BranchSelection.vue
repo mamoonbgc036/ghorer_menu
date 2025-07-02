@@ -3,13 +3,6 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Header Section -->
       <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-        <div>
-          <p
-            class="mt-2 text-gray-600 dark:text-gray-400"
-          >Find the nearest branch and place your order</p>
-        </div>
-
-        <!-- View Options -->
         <div class="mt-4 md:mt-0 flex items-center space-x-4">
           <div class="flex items-center space-x-2">
             <select
@@ -45,24 +38,6 @@
                 class="text-gray-700 cursor-pointer dark:text-gray-300 px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
               >{{ local.name }}</li>
             </ul>
-          </div>
-          <div class="mt-4 flex flex-wrap gap-4">
-            <label class="inline-flex items-center">
-              <input
-                type="checkbox"
-                v-model="showOpenOnly"
-                class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300"
-              />
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Open Now</span>
-            </label>
-            <label class="inline-flex items-center">
-              <input
-                type="checkbox"
-                v-model="deliveryOnly"
-                class="form-checkbox h-4 w-4 text-indigo-600 rounded border-gray-300"
-              />
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Delivery Available</span>
-            </label>
           </div>
         </div>
       </div>
