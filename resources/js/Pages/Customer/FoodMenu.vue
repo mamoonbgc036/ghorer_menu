@@ -1,8 +1,8 @@
 <template>
   <CustomerLayout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <!-- Branch Info Header -->
-      <div class="mb-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div class="flex-1">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ branch.name }}</h1>
@@ -42,164 +42,159 @@
           </div>
         </div>
       </div>
+      <div class="min-h-screen bg-gray-50 dark:bg-gray-900 w-full">
+        <div class="container mx-auto px-4 py-8">
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Categories Sidebar -->
+            <aside class="lg:col-span-1">
+              <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg sticky top-24 p-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Menu Categories</h2>
+                <nav class="space-y-2">
+                  <button
+                    v-for="category in categories"
+                    :key="category.id"
+                    @click="scrollToCategory(category.id)"
+                    class="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex justify-between items-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    :class="{ 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300': activeCategory === category.id }"
+                  >
+                    <span class="font-medium">{{ category.name }}</span>
+                    <span
+                      class="text-sm bg-indigo-50 dark:bg-indigo-900/20 px-2.5 py-1 rounded-full"
+                    >{{ getFoodsByCategory(category.id).length }}</span>
+                  </button>
+                </nav>
+              </div>
+            </aside>
 
-      <!-- Search and Filters -->
-      <!-- <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
-        <div class="flex flex-col sm:flex-row gap-4">
-          <div class="relative flex-1">
-            <input
-              type="text"
-              v-model="searchQuery"
-              placeholder="Search menu items..."
-              class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500"
-            />
-            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-          </div>
-          <div class="flex items-center space-x-4">
-            <label class="inline-flex items-center">
-              <input
-                type="checkbox"
-                v-model="filterVegetarian"
-                class="form-checkbox dark:bg-gray-800 h-5 w-5 text-indigo-600 rounded border-gray-300"
-              />
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Vegetarian</span>
-            </label>
-            <label class="inline-flex items-center">
-              <input
-                type="checkbox"
-                v-model="filterSpicy"
-                class="form-checkbox h-5 w-5 dark:bg-gray-800 text-indigo-600 rounded border-gray-300"
-              />
-              <span class="ml-2 text-gray-700 dark:text-gray-300">Spicy</span>
-            </label>
-          </div>
-        </div>
-      </div>-->
-
-      <!-- Menu Content -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <!-- Categories Sidebar -->
-        <div class="md:col-span-1">
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 sticky top-20">
-            <h2 class="font-semibold text-lg text-gray-900 dark:text-gray-100 mb-4">Menu Categories</h2>
-            <nav class="space-y-1">
-              <button
+            <!-- Food Items Grid -->
+            <main class="lg:col-span-2 rounded-2xl bg-white dark:bg-gray-900 shadow-md">
+              <section
                 v-for="category in categories"
                 :key="category.id"
-                @click="scrollToCategory(category.id)"
-                class="w-full text-left px-4 py-2 rounded-lg transition-colors duration-200"
-                :class="[
-                                    activeCategory === category.id
-                                        ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400'
-                                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                ]"
+                :id="`category-${category.id}`"
+                class="scroll-mt-24 mb-8"
               >
-                <div class="flex justify-between items-center">
-                  <span>{{ category.name }}</span>
-                  <span
-                    class="text-sm bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full"
-                  >{{ getFoodsByCategory(category.id).length }}</span>
-                </div>
-              </button>
-            </nav>
-          </div>
-        </div>
-
-        <!-- Food Items Grid -->
-        <div class="md:col-span-3">
-          <div
-            v-for="category in categories"
-            :key="category.id"
-            :id="`category-${category.id}`"
-            class="mb-12 scroll-mt-20"
-          >
-            <div class="mb-6">
-              <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ category.name }}</h2>
-              <p class="mt-1 text-gray-600 dark:text-gray-400">{{ category.description }}</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div
-                v-for="food in filteredFoodsByCategory(category.id)"
-                :key="food.id"
-                class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
-              >
-                <!-- Food Image -->
-                <div class="relative h-48">
-                  <img
-                    v-if="food.image_path"
-                    :src="getImageUrl(food.image_path)"
-                    :alt="food.name"
-                    class="w-full h-full object-cover"
-                  />
-                  <div
-                    v-if="!food.is_available"
-                    class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-                  >
-                    <span class="text-white font-medium">Currently Unavailable</span>
-                  </div>
+                <div class="dark:bg-gray-800 text-center rounded-t-2xl">
+                  <h2 class="text-3xl font-bold text-gray-900 dark:text-white">{{ category.name }}</h2>
+                  <p
+                    class="text-gray-600 dark:text-gray-400 leading-relaxed"
+                  >{{ category.description }}</p>
                 </div>
 
-                <!-- Food Info -->
-                <div class="p-4">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <h3
-                        class="font-semibold text-lg text-gray-900 dark:text-gray-100"
-                      >{{ food.name }}</h3>
-                      <p
-                        class="mt-1 text-sm text-gray-600 dark:text-gray-400"
-                      >{{ food.description }}</p>
-                    </div>
-                    <div class="flex space-x-2">
-                      <i
-                        v-if="food.is_vegetarian"
-                        class="fas fa-leaf text-green-500"
-                        title="Vegetarian"
-                      ></i>
-                      <i v-if="food.is_spicy" class="fas fa-pepper-hot text-red-500" title="Spicy"></i>
-                    </div>
-                  </div>
-
-                  <!-- Food Details -->
-                  <div class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                    <div class="flex items-center">
-                      <i class="fas fa-clock w-5"></i>
-                      <span>Prep time: {{ food.preparation_time }} mins</span>
-                    </div>
-                    <div v-if="food.allergens?.length" class="flex items-center">
-                      <i class="fas fa-exclamation-circle w-5"></i>
-                      <span>Allergens: {{ food.allergens.join(', ') }}</span>
-                    </div>
-                  </div>
-
-                  <!-- Price and Action -->
-                  <div
-                    class="mt-4 flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700"
+                <div class="grid grid-cols-1 gap-6">
+                  <article
+                    v-for="food in filteredFoodsByCategory(category.id)"
+                    :key="food.id"
+                    class="bg-white dark:bg-gray-800 shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 rounded-b-2xl"
                   >
-                    <div>
-                      <span
-                        class="text-lg font-semibold text-gray-900 dark:text-gray-100"
-                      >৳{{ food.base_price }}</span>
-                      <span
-                        v-if="food.original_price"
-                        class="ml-2 text-sm text-gray-500 line-through"
-                      >৳{{ food.original_price }}</span>
+                    <!-- Food Image -->
+                    <div class="relative h-56">
+                      <img
+                        v-if="food.image_path"
+                        :src="getImageUrl(food.image_path)"
+                        :alt="food.name"
+                        class="w-full h-full object-cover"
+                      />
+                      <div
+                        v-if="!food.is_available"
+                        class="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center"
+                      >
+                        <span class="text-white font-semibold text-lg">Currently Unavailable</span>
+                      </div>
                     </div>
-                    <button
-                      @click="openFoodModal(food)"
-                      :disabled="!food.is_available"
-                      class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium"
-                      :class="[
-                                                food.is_available
-                                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                                                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                            ]"
-                    >{{ food.is_available ? 'Add to Order' : 'Not Available' }}</button>
+
+                    <!-- Food Info -->
+                    <div class="p-6">
+                      <div class="flex justify-between items-start mb-4">
+                        <div>
+                          <h3
+                            class="text-xl font-semibold text-gray-900 dark:text-white"
+                          >{{ food.name }}</h3>
+                          <p
+                            class="text-gray-600 dark:text-gray-400 line-clamp-2"
+                          >{{ food.description }}</p>
+                        </div>
+                        <div class="flex space-x-2 items-center">
+                          <i
+                            v-if="food.is_vegetarian"
+                            class="fas fa-leaf text-green-500 text-lg"
+                            title="Vegetarian"
+                          ></i>
+                          <i
+                            v-if="food.is_spicy"
+                            class="fas fa-pepper-hot text-red-500 text-lg"
+                            title="Spicy"
+                          ></i>
+                        </div>
+                      </div>
+
+                      <!-- Food Details -->
+                      <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-clock w-5 text-indigo-500"></i>
+                          <span>Prep time: {{ food.preparation_time }} mins</span>
+                        </div>
+                        <div v-if="food.allergens?.length" class="flex items-center gap-2">
+                          <i class="fas fa-exclamation-circle w-5 text-amber-500"></i>
+                          <span>Allergens: {{ food.allergens.join(', ') }}</span>
+                        </div>
+                      </div>
+
+                      <!-- Price and Action -->
+                      <div
+                        class="flex justify-between items-center border-t border-gray-200 dark:border-gray-700 pt-4"
+                      >
+                        <div class="flex items-center gap-3">
+                          <span
+                            class="text-xl font-bold text-gray-900 dark:text-white"
+                          >৳{{ food.base_price }}</span>
+                          <span
+                            v-if="food.original_price"
+                            class="text-sm text-gray-500 dark:text-gray-400 line-through"
+                          >৳{{ food.original_price }}</span>
+                        </div>
+                        <button
+                          @click="openFoodModal(food)"
+                          :disabled="!food.is_available"
+                          class="inline-flex items-center px-5 py-2.5 rounded-lg text-sm font-medium transition-colors duration-200"
+                          :class="[
+                      food.is_available
+                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ]"
+                        >{{ food.is_available ? 'Add to Order' : 'Not Available' }}</button>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </section>
+            </main>
+
+            <!-- Order Summary Sidebar -->
+            <aside class="lg:col-span-1">
+              <div halides="bg-white dark:bg-gray-800 rounded-2xl shadow-lg sticky top-24 p-6">
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Order Summary</h2>
+                <p class="text-gray-600 dark:text-gray-400">Your order details will appear here.</p>
+                <!-- Placeholder for dynamic content -->
+                <div class="mt-4 space-y-4">
+                  <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                    <span>Subtotal</span>
+                    <span>৳0.00</span>
                   </div>
+                  <div class="flex justify-between text-gray-600 dark:text-gray-400">
+                    <span>Tax</span>
+                    <span>৳0.00</span>
+                  </div>
+                  <div class="flex justify-between font-bold text-gray-900 dark:text-white">
+                    <span>Total</span>
+                    <span>৳0.00</span>
+                  </div>
+                  <button
+                    class="w-full bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors duration-200"
+                  >Proceed to Checkout</button>
                 </div>
               </div>
-            </div>
+            </aside>
           </div>
         </div>
       </div>
@@ -207,28 +202,20 @@
       <!-- Food Selection Modal -->
       <TransitionRoot appear :show="isModalOpen" as="template">
         <Dialog as="div" @close="closeModal" class="relative z-50">
-          <!-- Modal Backdrop -->
           <div class="fixed inset-0 bg-black bg-opacity-25" />
-
-          <!-- Modal Content -->
           <div class="fixed inset-0 overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4">
               <DialogPanel
                 class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl transition-all"
               >
-                <!-- Modal Header -->
                 <DialogTitle
                   as="h3"
                   class="text-lg font-medium text-gray-900 dark:text-gray-100"
                 >{{ selectedFood?.name }}</DialogTitle>
-
-                <!-- Food Details -->
                 <div class="mt-4">
                   <p
                     class="text-sm text-gray-600 dark:text-gray-400"
                   >{{ selectedFood?.description }}</p>
-
-                  <!-- Extra Options Section -->
                   <div v-if="selectedFood?.extra_options?.length" class="mt-6">
                     <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100">Extra Options</h4>
                     <div class="mt-2 space-y-2">
@@ -249,8 +236,6 @@
                       </label>
                     </div>
                   </div>
-
-                  <!-- Quantity Section -->
                   <div class="mt-6">
                     <label
                       class="block text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -271,8 +256,6 @@
                       </button>
                     </div>
                   </div>
-
-                  <!-- Special Instructions -->
                   <div class="mt-6">
                     <label
                       class="block text-sm font-medium text-gray-900 dark:text-gray-100"
@@ -285,8 +268,6 @@
                     ></textarea>
                   </div>
                 </div>
-
-                <!-- Modal Footer -->
                 <div class="mt-6 flex items-center justify-between">
                   <div
                     class="text-lg font-medium text-gray-900 dark:text-gray-100"

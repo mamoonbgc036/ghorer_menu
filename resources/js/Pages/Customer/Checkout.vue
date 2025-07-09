@@ -38,7 +38,7 @@
             class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
           >Close</button>
           <button
-          @click="completeOrder"
+            @click="completeOrder"
             class="ml-3 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition"
           >Complete Payment</button>
         </div>
@@ -98,10 +98,7 @@
           </div>
 
           <!-- Delivery Address Section (Only for delivery orders) -->
-          <div
-            v-if="orderType === 'delivery'"
-            class="bg-white dark:bg-gray-800 rounded-lg shadow p-6"
-          >
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Delivery Address</h2>
               <button
@@ -136,10 +133,8 @@
           </div>
 
           <!-- Collection Information Section (Only for collection orders) -->
-          <div v-else class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-            <h2
-              class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4"
-            >Collection Information</h2>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Food Provider</h2>
             <div class="flex items-start space-x-3">
               <MapPinIcon class="w-5 h-5 text-gray-400 flex-shrink-0" />
               <div>
@@ -155,7 +150,7 @@
             <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Payment Method</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
-                v-for="method in ['mobile', 'cash']"
+                v-for="method in ['cash','mobile']"
                 :key="method"
                 @click="selectedPaymentMethod = method"
                 class="flex items-center space-x-3 border rounded-lg p-4 transition-colors duration-200"
@@ -166,7 +161,9 @@
                                 ]"
               >
                 <CreditCardIcon class="w-5 h-5 text-gray-400" />
-                <span class="text-gray-900 dark:text-gray-200 capitalize">{{ method == 'cash' ? 'Cash On Delivery' : method }}</span>
+                <span
+                  class="text-gray-900 dark:text-gray-200 capitalize"
+                >{{ method == 'cash' ? method : 'Mobile Payment' }}</span>
               </button>
             </div>
           </div>
@@ -175,13 +172,13 @@
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h2
               class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4"
-            >{{ orderType === 'delivery' ? 'Delivery Instructions' : 'Collection Instructions' }}</h2>
-            <textarea
+            >{{ orderType === 'delivery' ? 'Delivery Instructions' : 'Instructions' }}</h2>
+            <!-- <textarea
               v-model="deliveryNotes"
               rows="3"
               class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:ring-orange-500 focus:border-orange-500"
               :placeholder="orderType === 'delivery' ? 'Any special instructions for delivery...' : 'Any special instructions for collection...'"
-            ></textarea>
+            ></textarea>-->
           </div>
         </div>
 
@@ -316,10 +313,7 @@ import {
   DialogTitle,
   TransitionRoot,
 } from "@headlessui/vue";
-import {
-  CreditCardIcon,
-  MapPinIcon,
-} from "@heroicons/vue/24/outline";
+import { CreditCardIcon, MapPinIcon } from "@heroicons/vue/24/outline";
 import CustomerLayout from "@/Layouts/CustomerLayout.vue";
 
 const props = defineProps({
@@ -494,7 +488,7 @@ const validateMinimumOrder = () => {
 };
 
 const completeOrder = () => {
-    const orderData = {
+  const orderData = {
     order_type: orderType.value,
     branch_id: props.branch.id,
     items: cart.value.map((item) => ({
@@ -505,57 +499,60 @@ const completeOrder = () => {
       unit_price: item.food.base_price,
       subtotal: item.total,
     })),
-    payment_method: selectedPaymentMethod.value === 'mobile' ? paymentMethod.value : selectedPaymentMethod.value,
+    payment_method:
+      selectedPaymentMethod.value === "mobile"
+        ? paymentMethod.value
+        : selectedPaymentMethod.value,
     paymentRef: paymentRef.value,
     subtotal: subtotal.value,
     total_amount: total.value,
   };
-    validationErrors.value = {};
+  validationErrors.value = {};
 
-    // Run all validations
-    const isValid =
-      validateCart() &&
-      validateAddress() &&
-      validatePaymentMethod() &&
-      validateMinimumOrder();
+  // Run all validations
+  const isValid =
+    validateCart() &&
+    validateAddress() &&
+    validatePaymentMethod() &&
+    validateMinimumOrder();
 
-    if (!isValid) {
-      return;
-    }
+  if (!isValid) {
+    return;
+  }
 
-    isProcessing.value = true;
+  isProcessing.value = true;
 
-    // Only add delivery-related fields if it's a delivery order
-    if (orderType.value === "delivery") {
-      orderData.delivery_address = selectedAddress.value?.address;
-      orderData.delivery_latitude = selectedAddress.value?.latitude;
-      orderData.delivery_longitude = selectedAddress.value?.longitude;
-      orderData.delivery_notes = deliveryNotes.value;
-      orderData.delivery_fee = deliveryFee.value;
-    }
+  // Only add delivery-related fields if it's a delivery order
+  if (orderType.value === "delivery") {
+    orderData.delivery_address = selectedAddress.value?.address;
+    orderData.delivery_latitude = selectedAddress.value?.latitude;
+    orderData.delivery_longitude = selectedAddress.value?.longitude;
+    orderData.delivery_notes = deliveryNotes.value;
+    orderData.delivery_fee = deliveryFee.value;
+  }
 
-    console.log("Submitting order:", orderData);
+  console.log("Submitting order:", orderData);
 
-     router.post(route('customer.orders.store'), orderData, {
-        onSuccess: (page) => {
-            sessionStorage.removeItem('foodCart');
-            const urlParts = page.url.split('/');
-            console.log(urlParts);
-            const orderId = urlParts[urlParts.length - 1];
+  router.post(route("customer.orders.store"), orderData, {
+    onSuccess: (page) => {
+      sessionStorage.removeItem("foodCart");
+      const urlParts = page.url.split("/");
+      console.log(urlParts);
+      const orderId = urlParts[urlParts.length - 1];
 
-            if (orderId) {
-                router.visit(route('customer.orders.show', { order: orderId }));
-            } else {
-                showError('Failed to process order. Please try again.');
-                isProcessing.value = false;
-            }
-        },
-        onError: (e) => {
-            console.error('Error:', e);
-            isProcessing.value = false;
-            validationErrors.value = e;
-        }
-    });
+      if (orderId) {
+        router.visit(route("customer.orders.show", { order: orderId }));
+      } else {
+        showError("Failed to process order. Please try again.");
+        isProcessing.value = false;
+      }
+    },
+    onError: (e) => {
+      console.error("Error:", e);
+      isProcessing.value = false;
+      validationErrors.value = e;
+    },
+  });
 };
 
 // Place order

@@ -21,6 +21,7 @@ class Branch extends Model
         'contact_number',
         'delivery_radius',
         'is_active',
+        'image',
         'district_id',
         'thana_id',
         'local_id'

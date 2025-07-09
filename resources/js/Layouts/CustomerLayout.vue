@@ -66,7 +66,7 @@
                   >
                     <span
                       class="text-sm font-medium text-gray-600 dark:text-gray-300"
-                    >{{ auth.user.name.charAt(0) }}</span>
+                    >{{ auth.user?.name?.charAt(0) }}</span>
                   </div>
                 </button>
 
@@ -141,13 +141,13 @@
 
     <!-- Main Content -->
     <main class="pt-16 min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <slot></slot>
       </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+    <footer class="border-t border-gray-200 dark:border-gray-800" id="footer">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <!-- About Section -->
@@ -259,4 +259,12 @@ const logout = () => {
 
 <style scoped>
 /* Add any component-specific styles here */
+#footer {
+  background: #f9edea;
+}
+#footer h3,
+a,
+p {
+  color: black;
+}
 </style>

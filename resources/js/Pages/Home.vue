@@ -38,8 +38,6 @@
           <p
             class="max-w-2xl mx-auto text-xl md:text-2xl text-gray-600 dark:text-gray-300 leading-relaxed"
           >Within Our Best Restaurants And Catering Servics</p>
-
-          <!-- CTA Button -->
           <!-- Search Field -->
           <div class="relative max-w-xl mx-auto">
             <input
@@ -64,152 +62,149 @@
         </div>
       </div>
     </div>
-    <TransitionGroup name="list" tag="div" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-3">
+    <TransitionGroup
+      name="list"
+      tag="div"
+      class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6 px-4 md:px-8"
+    >
       <div
         v-for="branch in filteredBranches"
         :key="branch.id"
-        class="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700"
+        class="relative bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-800 overflow-hidden"
         data-aos="fade-up"
+        style="background-color: rgb(249 115 22);"
       >
-        <!-- Status Badge -->
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-          <div class="flex justify-between items-start">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ branch.name }}</h3>
-            <span
-              :class="[
-                                    'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                                    isOpen(branch.opening_hours)
-                                        ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
-                                        : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
-                                ]"
-            >
-              {{
-              isOpen(branch.opening_hours)
-              ? "Open Now"
-              : "Closed"
-              }}
-            </span>
-          </div>
+        <!-- Gradient Header Overlay -->
+        <div
+          class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-600"
+        ></div>
 
-          <address
-            class="mt-2 text-sm text-gray-500 dark:text-gray-400 not-italic"
-          >{{ branch.address }}</address>
+        <!-- Status Badge -->
+        <div
+          class="p-5 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-b from-gray-50 dark:from-gray-900 to-transparent"
+        >
+          <div class="flex items-center justify-center">
+            <!-- Combined Image + Info -->
+            <div class="flex flex-col items-center text-center">
+              <!-- Branch Image -->
+              <img
+                :src="branch.image ? 'http://localhost:8000/storage/' + branch.image : 'http://localhost:8000/storage/uploads/logo.png'"
+                alt="restaurant_logo"
+                class="w-14 h-14 rounded-full object-cover border-2 border-indigo-100 dark:border-indigo-900 mb-2"
+              />
+
+              <!-- Branch Info -->
+              <h3
+                class="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight"
+              >{{ branch.name }}</h3>
+              <address
+                class="mt-1 text-sm dark:text-gray-400 not-italic line-clamp-2"
+                style="font-size: 15px;"
+              >{{ branch.address }}</address>
+              <div
+                class="mt-1"
+                style="color: rgb(17 24 39); font-size: 15px;"
+              >{{ branch.contact_number }}</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Branch Details -->
-        <div class="p-4 space-y-4">
-          <!-- Distance & Delivery Info -->
-          <div class="flex items-center justify-between text-sm">
-            <span class="inline-flex items-center text-gray-500 dark:text-gray-400">
-              <i class="fas fa-map-marker-alt text-indigo-500 mr-2"></i>
-              {{ formatDistance(branch.distance) }}
-            </span>
-            <span class="inline-flex items-center text-gray-500 dark:text-gray-400">
-              <i class="fas fa-truck text-indigo-500 mr-2"></i>
-              Up to {{ branch.delivery_radius }}km
-            </span>
+        <div class="p-5 space-y-5">
+          <div
+            class="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-300"
+          >
+            <!-- Order Now Button -->
+            <div>
+              <Link
+                :href="route('customer.branch.menu', { branch: branch.id, type: 'collection' })"
+                class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900 transition-all duration-200"
+              >
+                <i class="fas fa-shopping-bag mr-2"></i> Order Now
+              </Link>
+            </div>
+
+            <!-- Day Select Dropdown -->
+            <div>
+              <select
+                v-model="selectedDay[branch.id]"
+                class="w-48 p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value>All Days</option>
+                <option
+                  v-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
+                  :key="day"
+                  :value="day"
+                >{{ day }}</option>
+              </select>
+            </div>
+
+            <!-- Directions Button -->
+            <div>
+              <a
+                :href="getDirectionsUrl(branch)"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900 transition-all duration-200"
+              >
+                <i class="fas fa-directions mr-2"></i> Directions
+              </a>
+            </div>
           </div>
 
-          <!-- Contact -->
-          <div class="text-sm text-gray-500 dark:text-gray-400">
-            <i class="fas fa-phone text-indigo-500 mr-2"></i>
-            {{ branch.contact_number }}
-          </div>
-          <!-- Opening Hours -->
-          <div class="space-y-2">
-            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Opening Hours</h4>
-            <div class="max-h-64 overflow-y-auto scrollbar-thin">
+          <!-- Opening Hours Table -->
+          <div class="space-y-3">
+            <div
+              class="max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-gray-100 dark:scrollbar-track-gray-800"
+            >
               <table class="w-full text-sm text-left">
                 <thead
-                  class="text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-600"
+                  class="text-gray-700 dark:text-gray-300 border-b border-gray-300 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-900"
                 >
                   <tr>
-                    <th class="py-2 px-4 text-left">
-                      <i class="fas fa-calendar-day mr-1 text-blue-500"></i>
-                      Day
+                    <th class="py-3 px-4 text-center font-semibold">
+                      <i class="fas fa-coffee mr-1 text-yellow-500"></i> Breakfast
                     </th>
-                    <th class="py-2 px-4 text-center">
-                      <i class="fas fa-coffee mr-1 text-yellow-500"></i>
-                      Breakfast
+                    <th class="py-3 px-4 text-center font-semibold">
+                      <i class="fas fa-utensils mr-1 text-blue-600"></i> Lunch
                     </th>
-                    <th class="py-2 px-4 text-center">
-                      <i class="fas fa-utensils mr-1 text-blue-600"></i>
-                      Lunch
-                    </th>
-                    <th class="py-2 px-4 text-center">
-                      <i class="fas fa-moon mr-1 text-purple-500"></i>
-                      Dinner
+                    <th class="py-3 px-4 text-center font-semibold">
+                      <i class="fas fa-moon mr-1 text-purple-500"></i> Dinner
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr
-                    v-for="hours in branch.opening_hours"
-                    :key="hours.day"
-                    class="text-gray-500 dark:text-gray-400"
+                    v-for="(hours, index) in branch.opening_hours.filter(
+                    (h) => !selectedDay[branch.id] || h.day === selectedDay[branch.id]
+                  )"
+                    :key="index"
+                    class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
-                    <td class="py-2 pr-4">{{ hours.day }}</td>
-                    <td class="py-2">
-                      {{
-                      formatTime(
-                      hours.breakfast.start
-                      )
-                      }}
-                      -
-                      {{
-                      formatTime(
-                      hours.breakfast.end
-                      )
-                      }}
-                    </td>
-                    <td class="py-2">
-                      {{ formatTime(hours.lunch.start) }}
-                      -
-                      {{
-                      formatTime(hours.lunch.end)
-                      }}
-                    </td>
-                    <td class="py-2">
-                      {{
-                      formatTime(
-                      hours.dinner.start
-                      )
-                      }}
-                      -
-                      {{
-                      formatTime(hours.dinner.end)
-                      }}
-                    </td>
+                    <td
+                      class="py-3 px-4 text-center"
+                    >{{ formatTime(hours.breakfast.start) }} - {{ formatTime(hours.breakfast.end) }}</td>
+                    <td
+                      class="py-3 px-4 text-center"
+                    >{{ formatTime(hours.lunch.start) }} - {{ formatTime(hours.lunch.end) }}</td>
+                    <td
+                      class="py-3 px-4 text-center"
+                    >{{ formatTime(hours.dinner.start) }} - {{ formatTime(hours.dinner.end) }}</td>
+                  </tr>
+                  <tr
+                    v-if="
+                    branch.opening_hours.filter(
+                      (h) => !selectedDay[branch.id] || h.day === selectedDay[branch.id]
+                    ).length === 0
+                  "
+                  >
+                    <td
+                      colspan="4"
+                      class="py-4 text-center text-gray-500 dark:text-gray-400 italic"
+                    >Closed</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <Link
-              :href="
-                                    route('customer.branch.menu', {
-                                        branch: branch.id,
-                                        type: 'collection',
-                                    })
-                                "
-              class="flex-1 inline-flex items-center justify-center px-4 py-2 border border-indigo-600 text-sm font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-            >
-              <i class="fas fa-shopping-bag mr-2"></i>
-              Order Now
-            </Link>
-
-            <a
-              :href="getDirectionsUrl(branch)"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-            >
-              <i class="fas fa-directions mr-2"></i>
-              Directions
-            </a>
           </div>
         </div>
       </div>
@@ -256,6 +251,11 @@ export default {
     });
     this.filterLocal = this.locals;
     this.filteredBranches = this.branches;
+    this.branches.forEach((branch) => {
+      if (branch.opening_hours?.length > 0) {
+        this.selectedDay[branch.id] = branch.opening_hours[0].day;
+      }
+    });
   },
   data() {
     return {
@@ -263,6 +263,7 @@ export default {
       showDropDown: false,
       filteredBranches: [],
       filterLocal: [],
+      selectedDay: {},
       floatingItems: [
         {
           icon: "fas fa-pizza-slice",
