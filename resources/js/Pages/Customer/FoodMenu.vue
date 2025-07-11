@@ -248,14 +248,44 @@
                   <span class="text-lg font-bold text-gray-900 dark:text-white">৳ {{ items.total }}</span>
                 </div>
               </div>
-              <div
-                v-if="selectedFood.length > 0"
-                class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-md text-center"
-              >
-                <span class="text-lg font-semibold text-gray-700 dark:text-gray-300">Sub Total:</span>
-                <span
-                  class="text-xl font-bold text-indigo-600 dark:text-indigo-400 ml-2"
-                >৳ {{ subTotal }}</span>
+              <div v-if="selectedFood.length > 0">
+                <div class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-md text-center">
+                  <span class="text-lg font-semibold text-gray-700 dark:text-gray-300">Sub Total:</span>
+                  <span
+                    class="text-xl font-bold text-indigo-600 dark:text-indigo-400 ml-2"
+                  >৳ {{ subTotal }}</span>
+                </div>
+
+                <button
+                  @click="handleCheckout"
+                  :disabled="isProcessing"
+                  class="w-full text-lg bg-indigo-600 text-white hover:bg-indigo-700 text-center px-5 py-2.5 rounded-lg transition-colors duration-200 flex justify-center items-center"
+                >
+                  <template v-if="isProcessing">
+                    Processing
+                    <svg
+                      class="animate-spin h-5 w-5 text-white ml-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      />
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                  </template>
+                  <template v-else>Process To Checkout</template>
+                </button>
               </div>
             </div>
           </div>
@@ -382,6 +412,7 @@ const props = defineProps({
 
 // State Management
 const searchQuery = ref("");
+const isProcessing = ref(false);
 const filterVegetarian = ref(false);
 const filterSpicy = ref(false);
 const activeCategory = ref(null);
@@ -399,6 +430,8 @@ const subTotal = computed(() => {
   selectedFood.value.sub_total = sub_total;
   return sub_total;
 });
+
+const handleCheckout = () => {};
 
 const increament = (selectedItemId) => {
   // find clicked object
