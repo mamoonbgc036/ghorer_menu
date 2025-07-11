@@ -170,118 +170,97 @@
               </section>
             </main>
 
-            <!-- Order Summary Sidebar -->
-            <aside class="lg:col-span-1">
-              <div halides="bg-white dark:bg-gray-800 rounded-2xl shadow-lg sticky top-24 p-6">
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Order Summary</h2>
-                <p class="text-gray-600 dark:text-gray-400">Your order details will appear here.</p>
-                <!-- Placeholder for dynamic content -->
-                <div class="mt-4 space-y-4">
-                  <div class="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Subtotal</span>
-                    <span>৳0.00</span>
+            <div class="lg:col-span-1">
+              <div
+                v-for="(items, index) in selectedFood"
+                :key="index"
+                :class="['bg-white dark:bg-gray-800 rounded-2xl shadow-lg top-24 p-6', index > 0 ? 'mt-2' : '']"
+              >
+                <h2
+                  class="text-xl font-semibold text-gray-900 dark:text-white mb-2"
+                >{{ items.name }}</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ items.description }}</p>
+
+                <!-- Portion Selection -->
+                <div class="mb-4">
+                  <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Select Portion</label>
+                  <div class="flex gap-4">
+                    <label
+                      class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"
+                    >
+                      <input
+                        type="radio"
+                        :name="`portion-${items.id}`"
+                        value="full"
+                        class="form-radio text-indigo-600"
+                        v-model="items.portion"
+                      />
+                      <span>Full</span>
+                    </label>
+                    <label
+                      class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"
+                    >
+                      <input
+                        type="radio"
+                        :name="`portion-${items.id}`"
+                        value="half"
+                        class="form-radio text-indigo-600"
+                        v-model="items.portion"
+                      />
+                      <span>Half</span>
+                    </label>
                   </div>
-                  <div class="flex justify-between text-gray-600 dark:text-gray-400">
-                    <span>Tax</span>
-                    <span>৳0.00</span>
+                </div>
+
+                <!-- Quantity Control -->
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Quantity</span>
+                  <div class="flex items-center border rounded-lg px-2 py-1 w-fit">
+                    <button
+                      @click="decreament(items.id)"
+                      class="text-indigo-600 text-xl font-bold px-2"
+                    >−</button>
+                    <span class="px-2 text-gray-900 dark:text-white">{{ items?.qty }}</span>
+                    <button
+                      @click="increament(items.id)"
+                      class="text-indigo-600 text-xl font-bold px-2"
+                    >+</button>
                   </div>
-                  <div class="flex justify-between font-bold text-gray-900 dark:text-white">
-                    <span>Total</span>
-                    <span>৳0.00</span>
-                  </div>
-                  <button
-                    class="w-full bg-indigo-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors duration-200"
-                  >Proceed to Checkout</button>
+                </div>
+
+                <!-- Special Instructions -->
+                <div class="mb-4">
+                  <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Special Instructions</label>
+                  <textarea
+                    rows="2"
+                    class="w-full border rounded-lg p-2 text-sm text-gray-800 dark:text-gray-100 dark:bg-gray-700"
+                    placeholder="Any special requests?"
+                  ></textarea>
+                </div>
+
+                <!-- Total -->
+                <div class="flex justify-between items-center mb-4">
+                  <span class="text-lg font-semibold text-gray-900 dark:text-white">Total:</span>
+                  <span class="text-lg font-bold text-gray-900 dark:text-white">৳ {{ items.total }}</span>
                 </div>
               </div>
-            </aside>
+              <div
+                v-if="selectedFood.length > 0"
+                class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-md text-center"
+              >
+                <span class="text-lg font-semibold text-gray-700 dark:text-gray-300">Sub Total:</span>
+                <span
+                  class="text-xl font-bold text-indigo-600 dark:text-indigo-400 ml-2"
+                >৳ {{ subTotal }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Food Selection Modal -->
-      <TransitionRoot appear :show="isModalOpen" as="template">
-        <Dialog as="div" @close="closeModal" class="relative z-50">
-          <div class="fixed inset-0 bg-black bg-opacity-25" />
-          <div class="fixed inset-0 overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4">
-              <DialogPanel
-                class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-xl transition-all"
-              >
-                <DialogTitle
-                  as="h3"
-                  class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                >{{ selectedFood?.name }}</DialogTitle>
-                <div class="mt-4">
-                  <p
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                  >{{ selectedFood?.description }}</p>
-                  <div v-if="selectedFood?.extra_options?.length" class="mt-6">
-                    <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100">Extra Options</h4>
-                    <div class="mt-2 space-y-2">
-                      <label
-                        v-for="option in selectedFood.extra_options"
-                        :key="option.id"
-                        class="flex items-center"
-                      >
-                        <input
-                          type="checkbox"
-                          v-model="selectedExtras"
-                          :value="option.id"
-                          class="form-checkbox h-4 w-4 dark:bg-gray-800 text-indigo-600 rounded border-gray-300"
-                        />
-                        <span
-                          class="ml-3 text-sm text-gray-700 dark:text-gray-300"
-                        >{{ option.name }} (+৳{{ option.price }})</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="mt-6">
-                    <label
-                      class="block text-sm font-medium text-gray-900 dark:text-gray-100"
-                    >Quantity</label>
-                    <div class="mt-2 flex items-center space-x-3">
-                      <button
-                        @click="quantity > 1 && quantity--"
-                        class="rounded-md p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      >
-                        <MinusIcon class="h-5 w-5" />
-                      </button>
-                      <span class="text-gray-900 dark:text-gray-100">{{ quantity }}</span>
-                      <button
-                        @click="quantity++"
-                        class="rounded-md p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      >
-                        <PlusIcon class="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
-                  <div class="mt-6">
-                    <label
-                      class="block text-sm font-medium text-gray-900 dark:text-gray-100"
-                    >Special Instructions</label>
-                    <textarea
-                      v-model="specialInstructions"
-                      rows="3"
-                      class="mt-2 block w-full rounded-md border-gray-300 dark:bg-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      placeholder="Any special requests?"
-                    ></textarea>
-                  </div>
-                </div>
-                <div class="mt-6 flex items-center justify-between">
-                  <div
-                    class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                  >Total: ৳{{ calculateTotal }}</div>
-                  <button
-                    @click="addToCart"
-                    class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >Add to Cart</button>
-                </div>
-              </DialogPanel>
-            </div>
-          </div>
-        </Dialog>
-      </TransitionRoot>
 
       <!-- Authentication Modal -->
       <AuthModal v-model="showAuthModal" :redirect-path="currentPath" />
@@ -372,13 +351,6 @@
 </template>
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionRoot,
-} from "@headlessui/vue";
-import { MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import { router } from "@inertiajs/vue3";
 import CustomerLayout from "@/Layouts/CustomerLayout.vue";
 import AuthModal from "@/Components/Auth/AuthModal.vue";
@@ -416,11 +388,38 @@ const activeCategory = ref(null);
 const isModalOpen = ref(false);
 const showAuthModal = ref(false);
 const showMiniCart = ref(false);
-const selectedFood = ref(null);
+const selectedFood = ref([]);
 const selectedExtras = ref([]);
 const quantity = ref(1);
 const specialInstructions = ref("");
 const cart = ref([]);
+
+const subTotal = computed(() => {
+  let sub_total = selectedFood.value.reduce((sum, item) => sum + item.total, 0);
+  selectedFood.value.sub_total = sub_total;
+  return sub_total;
+});
+
+const increament = (selectedItemId) => {
+  // find clicked object
+  const selectedItem = selectedFood.value.find(
+    (item) => item.id == selectedItemId
+  );
+  // increase qty
+  selectedItem.qty++;
+  // increase total
+  selectedItem.total = selectedItem.qty * parseInt(selectedItem.base_price);
+};
+
+const decreament = (selectedItemId) => {
+  const selectedItem = selectedFood.value.find(
+    (item) => item.id == selectedItemId
+  );
+  if (selectedItem.qty > 1) {
+    selectedItem.qty--;
+    selectedItem.total = selectedItem.qty * parseInt(selectedItem.base_price);
+  }
+};
 
 const redirectToLogin = () => {
   // Save the current full path including query parameters
@@ -448,7 +447,10 @@ const isRestaurantOpen = computed(() => {
 
 // Computed Properties
 const cartTotal = computed(() => {
-  return cart.value.reduce((total, item) => total + item.total, 0).toFixed(2);
+  let subTtotal = cart.value
+    .reduce((total, item) => total + item.total, 0)
+    .toFixed(2);
+  return subTotal;
 });
 
 const calculateTotal = computed(() => {
@@ -507,7 +509,27 @@ const getImageUrl = (imagePath) => {
 
 // Modal Functions
 const openFoodModal = (food) => {
-  selectedFood.value = food;
+  // check whether the food is exist in selectedFood
+  const check = selectedFood.value.some((item) => item.id == food.id);
+  if (!check) {
+    food.qty = 1;
+    food.total = parseInt(food.base_price);
+    food.portion = "full";
+    console.log(food);
+    selectedFood.value.push(food);
+  } else {
+    const preSelectedFood = selectedFood.value.find(
+      (item) => item.id == food.id
+    );
+    preSelectedFood.qty++;
+    preSelectedFood.total =
+      preSelectedFood.qty * parseInt(preSelectedFood.base_price);
+  }
+
+  // check existing selectedFood for the clicked food
+  // const check = selectedFood.value.some(item => item.)
+  // if found in existing increase it quantity
+  // if no found in existing, add a new card
   selectedExtras.value = [];
   quantity.value = 1;
   specialInstructions.value = "";
