@@ -28,16 +28,19 @@
 
           <div class="mt-4 lg:mt-0">
             <div class="flex flex-col items-end">
-              <span
-                class="text-lg font-medium text-gray-900 dark:text-gray-100"
-              >{{ orderType === 'delivery' ? 'Delivery' : 'Collection' }} Order</span>
-              <span
-                v-if="orderType === 'delivery'"
-                class="text-sm text-gray-600 dark:text-gray-400"
-              >Delivery within {{ branch.delivery_radius }}km</span>
-              <span
-                class="text-sm text-gray-600 dark:text-gray-400"
-              >Min. order: ৳{{ branch.minimum_order }}</span>
+              <!-- Order Type Dropdown -->
+              <label
+                for="orderType"
+                class="mb-1 text-sm text-gray-700 dark:text-gray-300 font-medium"
+              >Order Type</label>
+              <select
+                id="orderType"
+                v-model="orderType"
+                class="w-48 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                <option value="delivery">Delivery</option>
+                <option value="collection">Collection</option>
+              </select>
             </div>
           </div>
         </div>
@@ -336,6 +339,7 @@ const isProcessing = ref(false);
 const filterVegetarian = ref(false);
 const filterSpicy = ref(false);
 const activeCategory = ref(null);
+const orderType = ref("collection");
 const selectedFood = ref(
   JSON.parse(localStorage.getItem("selectedItem"))?.items ?? []
 );
@@ -366,6 +370,7 @@ const saveToLocalStorage = (selectedItemValue) => {
     JSON.stringify({
       items: selectedItemValue,
       sub_total: subTotal.value,
+      order_type: orderType.value,
     })
   );
 };

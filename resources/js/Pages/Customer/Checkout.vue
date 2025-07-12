@@ -396,7 +396,7 @@ const loadCart = () => {
 
     cart.value = cartData.items;
     console.log("cart itmes", cart.value);
-    orderType.value = cartData.orderType;
+    orderType.value = cartData.order_type;
     console.log("Order Type set to:", orderType.value);
   } catch (error) {
     console.error("Error loading cart:", error);
