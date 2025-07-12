@@ -1,74 +1,88 @@
 09.07.2025
 add to cart redesign
 
-Illuminate\Database\Eloquent\Collection {#1381 ▼ // app\Http\Controllers\FoodMenuController.php:22
-  #items: array:2 [▼
-    6 => 
-Illuminate\Database\Eloquent
-\
-Collection {#1377 ▼
-      #items: array:1 [▼
-        0 => 
-App\Models
-\
-Food {#1391 ▼
-          #connection: "mysql"
-          #table: "food"
-          #primaryKey: "id"
-          #keyType: "int"
-          +incrementing: true
-          #with: []
-          #withCount: []
-          +preventsLazyLoading: false
-          #perPage: 15
-          +exists: true
-          +wasRecentlyCreated: false
-          #escapeWhenCastingToString: false
-          #attributes: array:17 [▶]
-          #original: array:17 [▼
-            "id" => 6
-            "branch_id" => 25
-            "category_id" => 6
-            "name" => "Birani"
-            "description" => "dfafdfd"
-            "base_price" => "200.00"
-            "preparation_time" => 20
-            "image_path" => "foods/Uvf0DqNBCVTWVGRNKWrQZKKiBPcQrSjkb5J0ZKp9.jpg"
-            "is_vegetarian" => 0
-            "is_spicy" => 0
-            "allergens" => null
-            "is_available" => 1
-            "sort_order" => 0
-            "created_at" => "2025-06-29 15:04:10"
-            "updated_at" => "2025-06-29 15:04:10"
-            "deleted_at" => null
-            "created_by" => null
-          ]
-          #changes: []
-          #casts: array:8 [▶]
-          #classCastCache: []
-          #attributeCastCache: []
-          #dateFormat: null
-          #appends: []
-          #dispatchesEvents: []
-          #observables: []
-          #relations: array:2 [▶]
-          #touches: []
-          +timestamps: true
-          +usesUniqueIds: false
-          #hidden: []
-          #visible: []
-          #fillable: array:12 [▶]
-          #guarded: array:1 [▶]
-          #forceDeleting: false
+{
+    "items": [
+        {
+            "id": 1752286444201,
+            "food": {
+                "id": 7,
+                "branch_id": 25,
+                "category_id": 5,
+                "name": "Angelica Soto",
+                "description": "Aliquam tempora magn",
+                "base_price": "608.00",
+                "preparation_time": 15,
+                "image_path": "foods/toJ5fj5u90PLbkjhdsnuUjicwbhaivD0UzcoUELi.webp",
+                "is_vegetarian": false,
+                "is_spicy": false,
+                "allergens": null,
+                "is_available": true,
+                "sort_order": 0,
+                "created_at": "2025-06-29T11:05:13.000000Z",
+                "updated_at": "2025-06-29T11:05:13.000000Z",
+                "deleted_at": null,
+                "created_by": null,
+                "category": {
+                    "id": 5,
+                    "name": "Launch",
+                    "description": "Launch description",
+                    "image_path": "categories/BwEd4SQo0aaiZ43jUY4tgjJ5UpUSacDmLX6ODWHa.jpg",
+                    "sort_order": 1,
+                    "is_active": true,
+                    "created_at": "2025-05-25T11:05:50.000000Z",
+                    "updated_at": "2025-05-25T11:05:50.000000Z",
+                    "deleted_at": null
+                },
+                "extra_options": []
+            },
+            "quantity": 1,
+            "extras": [],
+            "specialInstructions": "",
+            "total": 608,
+            "type": "collection"
+        },
+        {
+            "id": 1752286447640,
+            "food": {
+                "id": 6,
+                "branch_id": 25,
+                "category_id": 6,
+                "name": "Birani",
+                "description": "dfafdfd",
+                "base_price": "200.00",
+                "preparation_time": 20,
+                "image_path": "foods/Uvf0DqNBCVTWVGRNKWrQZKKiBPcQrSjkb5J0ZKp9.jpg",
+                "is_vegetarian": false,
+                "is_spicy": false,
+                "allergens": null,
+                "is_available": true,
+                "sort_order": 0,
+                "created_at": "2025-06-29T09:04:10.000000Z",
+                "updated_at": "2025-06-29T09:04:10.000000Z",
+                "deleted_at": null,
+                "created_by": null,
+                "category": {
+                    "id": 6,
+                    "name": "Dinner edited",
+                    "description": "Duis voluptatem non",
+                    "image_path": "categories/nCO3d7SGaC5LPh25QgjdxjMvW3TGH7iTzspNGo4Q.jpg",
+                    "sort_order": 50,
+                    "is_active": true,
+                    "created_at": "2025-05-25T14:29:59.000000Z",
+                    "updated_at": "2025-07-06T12:43:48.000000Z",
+                    "deleted_at": null
+                },
+                "extra_options": []
+            },
+            "quantity": 1,
+            "extras": [],
+            "specialInstructions": "",
+            "total": 200,
+            "type": "collection"
         }
-      ]
-      #escapeWhenCastingToString: false
-    }
-    5 => 
-Illuminate\Database\Eloquent
-\
-Collection {#1380 ▶}
-  ]
-  #escapeWhenCastingToString: false
+    ],
+    "branchId": 25,
+    "orderType": "collection",
+    "lastUpdated": "2025-07-12T02:14:07.641Z"
 }

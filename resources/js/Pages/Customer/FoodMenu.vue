@@ -176,12 +176,19 @@
                 :key="index"
                 :class="['bg-white dark:bg-gray-800 rounded-2xl shadow-lg top-24 p-6', index > 0 ? 'mt-2' : '']"
               >
-                <h2
-                  class="text-xl font-semibold text-gray-900 dark:text-white mb-2"
-                >{{ items.name }}</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ items.description }}</p>
-
-                <!-- Portion Selection -->
+                <div class="relative flex">
+                  <div>
+                    <h2
+                      class="text-xl font-semibold text-gray-900 dark:text-white mb-2"
+                    >{{ items.name }}</h2>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ items.description }}</p>
+                  </div>
+                  <button
+                    @click="deleteItem(items.id)"
+                    class="absolute top-0 right-0 text-2xl text-white bg-red-600 hover:bg-red-700 rounded-full w-7 h-7 flex items-center justify-center shadow-lg"
+                    title="Remove"
+                  >×</button>
+                </div>
                 <div class="mb-4">
                   <label
                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
@@ -259,12 +266,11 @@
                 <button
                   @click="handleCheckout"
                   :disabled="isProcessing"
-                  class="w-full text-lg bg-indigo-600 text-white hover:bg-indigo-700 text-center px-5 py-2.5 rounded-lg transition-colors duration-200 flex justify-center items-center"
+                  class="w-full text-lg bg-indigo-600 text-white hover:bg-indigo-700 text-center px-5 py-2.5 rounded-lg transition-colors duration-200 flex justify-center items-center mt-2"
                 >
                   <template v-if="isProcessing">
-                    Processing
                     <svg
-                      class="animate-spin h-5 w-5 text-white ml-2"
+                      class="animate-spin h-5 w-5 text-white text-center"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -284,7 +290,7 @@
                       />
                     </svg>
                   </template>
-                  <template v-else>Process To Checkout</template>
+                  <template v-else>Proceed To Checkout</template>
                 </button>
               </div>
             </div>
@@ -419,7 +425,9 @@ const activeCategory = ref(null);
 const isModalOpen = ref(false);
 const showAuthModal = ref(false);
 const showMiniCart = ref(false);
-const selectedFood = ref([]);
+const selectedFood = ref(
+  JSON.parse(localStorage.getItem("selectedItem"))?.item ?? []
+);
 const selectedExtras = ref([]);
 const quantity = ref(1);
 const specialInstructions = ref("");
@@ -430,6 +438,22 @@ const subTotal = computed(() => {
   selectedFood.value.sub_total = sub_total;
   return sub_total;
 });
+
+const deleteItem = (id) => {
+  const selected = selectedFood.value.filter((item) => item.id !== id);
+  selectedFood.value = selected;
+  saveToLocalStorage(selected);
+};
+
+const saveToLocalStorage = (selectedItemValue) => {
+  localStorage.setItem(
+    "selectedItem",
+    JSON.stringify({
+      item: selectedItemValue,
+      sub_total: subTotal.value,
+    })
+  );
+};
 
 const handleCheckout = () => {};
 
@@ -442,6 +466,7 @@ const increament = (selectedItemId) => {
   selectedItem.qty++;
   // increase total
   selectedItem.total = selectedItem.qty * parseInt(selectedItem.base_price);
+  saveToLocalStorage(selectedFood.value);
 };
 
 const decreament = (selectedItemId) => {
@@ -452,6 +477,7 @@ const decreament = (selectedItemId) => {
     selectedItem.qty--;
     selectedItem.total = selectedItem.qty * parseInt(selectedItem.base_price);
   }
+  saveToLocalStorage(selectedFood.value);
 };
 
 const redirectToLogin = () => {
@@ -542,22 +568,34 @@ const getImageUrl = (imagePath) => {
 
 // Modal Functions
 const openFoodModal = (food) => {
-  // check whether the food is exist in selectedFood
-  const check = selectedFood.value.some((item) => item.id == food.id);
+  // check whether there is a an item named selectedItem in localstorage and food id exist
+  // if localstorage empty, insert the food
+
+  // if not empty search for the food id
+
+  // if food id found, increase qty and total
+
+  //if not found insert
+  const check = selectedFood.value.some((item) => item.id === food.id);
+
   if (!check) {
-    food.qty = 1;
-    food.total = parseInt(food.base_price);
-    food.portion = "full";
-    console.log(food);
-    selectedFood.value.push(food);
+    const selected = {
+      ...food,
+      qty: 1,
+      total: parseInt(food.base_price),
+      portion: "full",
+    };
+    selectedFood.value.push(selected);
   } else {
     const preSelectedFood = selectedFood.value.find(
-      (item) => item.id == food.id
+      (item) => item.id === food.id
     );
-    preSelectedFood.qty++;
+    preSelectedFood.qty += 1;
     preSelectedFood.total =
       preSelectedFood.qty * parseInt(preSelectedFood.base_price);
   }
+
+  saveToLocalStorage(selectedFood.value);
 
   // check existing selectedFood for the clicked food
   // const check = selectedFood.value.some(item => item.)
