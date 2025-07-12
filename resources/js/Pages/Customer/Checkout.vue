@@ -326,7 +326,9 @@ const isPayOpen = ref(false);
 const paymentMethod = ref(null);
 const paymentRef = ref("");
 const cart = ref([]);
-const orderType = ref(null);
+const orderType = ref(
+  JSON.parse(localStorage.getItem("selectedItem")).order_type
+);
 const selectedAddress = ref(null);
 const selectedPaymentMethod = ref("mobile");
 const deliveryNotes = ref("");
@@ -363,6 +365,8 @@ const initializeAddress = () => {
 
 // Load cart data from session storage
 const loadCart = () => {
+  console.log(orderType.value, "focus");
+
   try {
     const savedCart = localStorage.getItem("selectedItem");
     if (!savedCart) {

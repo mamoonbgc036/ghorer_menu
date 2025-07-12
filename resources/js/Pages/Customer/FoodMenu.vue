@@ -36,6 +36,7 @@
               <select
                 id="orderType"
                 v-model="orderType"
+                @change="handleOrderTypeChange"
                 class="w-48 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="delivery">Delivery</option>
@@ -323,11 +324,6 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  orderType: {
-    type: String,
-    required: true,
-    validator: (value) => ["delivery", "collection"].includes(value),
-  },
   auth: {
     type: Object,
     default: () => ({}),
@@ -350,6 +346,10 @@ const updateInstruction = (id, value) => {
     instruction_for_item.instructions = value;
     saveToLocalStorage(selectedFood.value);
   }
+};
+
+const handleOrderTypeChange = () => {
+  saveToLocalStorage(selectedFood.value);
 };
 
 const subTotal = computed(() => {
