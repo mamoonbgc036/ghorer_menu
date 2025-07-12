@@ -297,91 +297,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Authentication Modal -->
-      <AuthModal v-model="showAuthModal" :redirect-path="currentPath" />
-
-      <!-- Cart Preview -->
-      <Transition
-        enter-active-class="transform transition ease-out duration-300"
-        enter-from-class="translate-y-full"
-        enter-to-class="translate-y-0"
-        leave-active-class="transform transition ease-in duration-300"
-        leave-from-class="translate-y-0"
-        leave-to-class="translate-y-full"
-      >
-        <div v-if="cart.length > 0" class="fixed bottom-0 inset-x-0 pb-safe z-40">
-          <div
-            class="bg-white dark:bg-gray-800 shadow-lg border-t border-gray-200 dark:border-gray-700"
-          >
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                  <div class="flex items-center">
-                    <span
-                      class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                    >{{ cart.length }} {{ cart.length === 1 ? 'item' : 'items' }}</span>
-                  </div>
-                  <div class="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
-                  <div class="flex items-center">
-                    <span
-                      class="text-lg font-medium text-gray-900 dark:text-gray-100"
-                    >Total: ৳{{ cartTotal }}</span>
-                  </div>
-                </div>
-
-                <div class="flex items-center space-x-4">
-                  <button
-                    @click="clearCart"
-                    class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                  >
-                    <i class="fas fa-trash-alt mr-2"></i>
-                    Clear
-                  </button>
-
-                  <button
-                    @click="proceedToCheckout"
-                    class="inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-                  >
-                    <i class="fas fa-shopping-cart mr-2"></i>
-                    Checkout
-                  </button>
-                </div>
-              </div>
-
-              <!-- Mini Cart Items Preview -->
-              <div v-if="showMiniCart" class="mt-4 space-y-2 max-h-60 overflow-y-auto">
-                <div
-                  v-for="item in cart"
-                  :key="item.id"
-                  class="flex items-center justify-between py-2 border-t border-gray-200 dark:border-gray-700"
-                >
-                  <div class="flex items-center">
-                    <span class="text-gray-600 dark:text-gray-400">{{ item.quantity }}x</span>
-                    <span class="ml-2 text-gray-900 dark:text-gray-100">{{ item.food.name }}</span>
-                    <span
-                      v-if="item.extras.length"
-                      class="ml-2 text-sm text-gray-500 dark:text-gray-400"
-                    >({{ item.extras.map(e => e.name).join(', ') }})</span>
-                  </div>
-                  <div class="flex items-center space-x-4">
-                    <span class="text-gray-900 dark:text-gray-100">
-                      ৳{{ item.total.toFixed(2)
-                      }}
-                    </span>
-                    <button
-                      @click="removeFromCart(item.id)"
-                      class="text-red-500 hover:text-red-600"
-                    >
-                      <i class="fas fa-times"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Transition>
     </div>
   </CustomerLayout>
 </template>
@@ -389,8 +304,6 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { router } from "@inertiajs/vue3";
 import CustomerLayout from "@/Layouts/CustomerLayout.vue";
-import AuthModal from "@/Components/Auth/AuthModal.vue";
-
 // Props definition
 const props = defineProps({
   branch: {
@@ -417,20 +330,13 @@ const props = defineProps({
 });
 
 // State Management
-const searchQuery = ref("");
 const isProcessing = ref(false);
 const filterVegetarian = ref(false);
 const filterSpicy = ref(false);
 const activeCategory = ref(null);
-const isModalOpen = ref(false);
-const showAuthModal = ref(false);
-const showMiniCart = ref(false);
 const selectedFood = ref(
-  JSON.parse(localStorage.getItem("selectedItem"))?.item ?? []
+  JSON.parse(localStorage.getItem("selectedItem"))?.items ?? []
 );
-const selectedExtras = ref([]);
-const quantity = ref(1);
-const specialInstructions = ref("");
 const cart = ref([]);
 
 const subTotal = computed(() => {
@@ -449,13 +355,21 @@ const saveToLocalStorage = (selectedItemValue) => {
   localStorage.setItem(
     "selectedItem",
     JSON.stringify({
-      item: selectedItemValue,
+      items: selectedItemValue,
       sub_total: subTotal.value,
     })
   );
 };
 
-const handleCheckout = () => {};
+const handleCheckout = () => {
+  isProcessing.value = true;
+  setTimeout(redirect, 3000);
+};
+
+const redirect = () => {
+  isProcessing.value = false;
+  router.visit(route("customer.checkout", { branch: props.branch.id }));
+};
 
 const increament = (selectedItemId) => {
   // find clicked object
@@ -480,15 +394,6 @@ const decreament = (selectedItemId) => {
   saveToLocalStorage(selectedFood.value);
 };
 
-const redirectToLogin = () => {
-  // Save the current full path including query parameters
-  sessionStorage.setItem(
-    "redirect_after_auth",
-    window.location.pathname + window.location.search
-  );
-  router.visit(route("login"));
-};
-
 // Restaurant Status
 const isRestaurantOpen = computed(() => {
   if (!props.branch.opening_hours) return false;
@@ -504,46 +409,9 @@ const isRestaurantOpen = computed(() => {
   return currentTime >= todayHours.open && currentTime <= todayHours.close;
 });
 
-// Computed Properties
-const cartTotal = computed(() => {
-  let subTtotal = cart.value
-    .reduce((total, item) => total + item.total, 0)
-    .toFixed(2);
-  return subTotal;
-});
-
-const calculateTotal = computed(() => {
-  if (!selectedFood.value) return "0.00";
-
-  let total = parseFloat(selectedFood.value.base_price);
-
-  // Add extras
-  selectedExtras.value.forEach((extraId) => {
-    const extra = selectedFood.value.extra_options.find(
-      (opt) => opt.id === extraId
-    );
-    if (extra) {
-      total += parseFloat(extra.price);
-    }
-  });
-
-  return (total * quantity.value).toFixed(2);
-});
-
-// Filter Functions
+// needed
 const filteredFoodsByCategory = (categoryId) => {
   let foods = getFoodsByCategory(categoryId);
-
-  // Apply search filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase();
-    foods = foods.filter(
-      (food) =>
-        food.name.toLowerCase().includes(query) ||
-        food.description.toLowerCase().includes(query)
-    );
-  }
-
   // Apply dietary filters
   if (filterVegetarian.value) {
     foods = foods.filter((food) => food.is_vegetarian);
@@ -555,6 +423,7 @@ const filteredFoodsByCategory = (categoryId) => {
   return foods;
 };
 
+// needed
 const getFoodsByCategory = (categoryId) => {
   return props.foods[categoryId] || [];
 };
@@ -568,14 +437,6 @@ const getImageUrl = (imagePath) => {
 
 // Modal Functions
 const openFoodModal = (food) => {
-  // check whether there is a an item named selectedItem in localstorage and food id exist
-  // if localstorage empty, insert the food
-
-  // if not empty search for the food id
-
-  // if food id found, increase qty and total
-
-  //if not found insert
   const check = selectedFood.value.some((item) => item.id === food.id);
 
   if (!check) {
@@ -594,63 +455,10 @@ const openFoodModal = (food) => {
     preSelectedFood.total =
       preSelectedFood.qty * parseInt(preSelectedFood.base_price);
   }
-
   saveToLocalStorage(selectedFood.value);
-
-  // check existing selectedFood for the clicked food
-  // const check = selectedFood.value.some(item => item.)
-  // if found in existing increase it quantity
-  // if no found in existing, add a new card
-  selectedExtras.value = [];
-  quantity.value = 1;
-  specialInstructions.value = "";
-  isModalOpen.value = true;
 };
 
-const closeModal = () => {
-  isModalOpen.value = false;
-  setTimeout(() => {
-    selectedFood.value = null;
-    selectedExtras.value = [];
-    quantity.value = 1;
-    specialInstructions.value = "";
-  }, 300);
-};
-
-const closeAuthModal = () => {
-  showAuthModal.value = false;
-};
-
-const addToCart = () => {
-  const extras = selectedFood.value.extra_options.filter((opt) =>
-    selectedExtras.value.includes(opt.id)
-  );
-
-  const cartItem = {
-    id: Date.now(), // Unique identifier
-    food: selectedFood.value,
-    quantity: quantity.value,
-    extras: extras,
-    specialInstructions: specialInstructions.value,
-    total: parseFloat(calculateTotal.value),
-    type: route().params.type, // Get the type from route params (delivery/collection)
-  };
-
-  cart.value.push(cartItem);
-  saveCartToSession();
-  closeModal();
-};
-
-const removeFromCart = (itemId) => {
-  cart.value = cart.value.filter((item) => item.id !== itemId);
-  saveCartToSession();
-};
-
-const clearCart = () => {
-  cart.value = [];
-  sessionStorage.removeItem("foodCart");
-};
-
+// need for clarification
 const saveCartToSession = () => {
   const cartData = {
     items: cart.value,
@@ -661,7 +469,7 @@ const saveCartToSession = () => {
   sessionStorage.setItem("foodCart", JSON.stringify(cartData));
 };
 
-// Navigation Functions
+// needed
 const scrollToCategory = (categoryId) => {
   activeCategory.value = categoryId;
   const element = document.getElementById(`category-${categoryId}`);
@@ -669,83 +477,6 @@ const scrollToCategory = (categoryId) => {
     element.scrollIntoView({ behavior: "smooth" });
   }
 };
-
-const redirectToRegister = () => {
-  sessionStorage.setItem("redirect_after_auth", window.location.pathname);
-  router.visit(route("register"));
-};
-
-const proceedToCheckout = () => {
-  if (!props.auth?.user) {
-    showAuthModal.value = true;
-    return;
-  }
-
-  if (cart.value.length === 0) {
-    return;
-  }
-
-  if (cartTotal.value < props.branch.minimum_order) {
-    alert(`Minimum order amount is ৳${props.branch.minimum_order}`);
-    return;
-  }
-
-  saveCartToSession();
-  router.visit(route("customer.checkout", { branch: props.branch.id }));
-};
-
-// Intersection Observer for Category Highlighting
-const setupCategoryObserver = () => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const categoryId = parseInt(entry.target.id.replace("category-", ""));
-          activeCategory.value = categoryId;
-        }
-      });
-    },
-    { threshold: 0.3 }
-  );
-
-  props.categories.forEach((category) => {
-    const element = document.getElementById(`category-${category.id}`);
-    if (element) observer.observe(element);
-  });
-};
-
-// Lifecycle Hooks
-onMounted(() => {
-  // Set initial active category
-  if (props.categories.length > 0) {
-    activeCategory.value = props.categories[0].id;
-  }
-
-  // Load saved cart
-  const savedCart = sessionStorage.getItem("foodCart");
-  if (savedCart) {
-    try {
-      const cartData = JSON.parse(savedCart);
-      if (cartData.branchId === props.branch.id) {
-        cart.value = cartData.items;
-      }
-    } catch (error) {
-      console.error("Error loading cart:", error);
-      sessionStorage.removeItem("foodCart");
-    }
-  }
-
-  setupCategoryObserver();
-});
-
-// Watchers
-watch(
-  cart,
-  () => {
-    showMiniCart.value = cart.value.length > 0;
-  },
-  { deep: true }
-);
 </script>
 <style scoped>
 /* Scroll Margin for Header Offset */
