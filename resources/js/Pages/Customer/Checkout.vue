@@ -63,7 +63,6 @@
                 class="text-lg font-medium text-orange-600 dark:text-orange-400"
               >{{ orderType === 'delivery' ? 'Delivery Order' : 'Collection Order' }}</div>
             </div>
-
             <div v-if="cart.length" class="space-y-4">
               <div
                 v-for="item in cart"
@@ -71,21 +70,12 @@
                 class="flex justify-between items-start border-b border-gray-200 dark:border-gray-700 pb-4"
               >
                 <div>
-                  <h3 class="text-gray-900 dark:text-gray-200 font-medium">{{ item.food.name }}</h3>
-                  <p class="text-sm text-gray-600 dark:text-gray-400">Quantity: {{ item.quantity }}</p>
-                  <div v-if="item.extras?.length" class="text-sm text-gray-600 dark:text-gray-400">
-                    Extras:
-                    <span v-for="(extraId, index) in item.extras" :key="extraId">
-                      {{ item.food.extra_options.find(e => e.id === extraId)?.name }}
-                      <span
-                        v-if="index < item.extras.length - 1"
-                      >,</span>
-                    </span>
-                  </div>
+                  <h3 class="text-gray-900 dark:text-gray-200 font-medium">{{ item.name }}</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">Quantity: {{ item.qty }}</p>
                   <p
-                    v-if="item.specialInstructions"
+                    v-if="item.instructions"
                     class="text-sm text-gray-600 dark:text-gray-400"
-                  >Note: {{ item.specialInstructions }}</p>
+                  >Note: {{ item.instructions }}</p>
                 </div>
                 <span class="text-gray-900 dark:text-gray-200">
                   <span style="font-size: 30px;">৳</span>
@@ -374,7 +364,7 @@ const initializeAddress = () => {
 // Load cart data from session storage
 const loadCart = () => {
   try {
-    const savedCart = sessionStorage.getItem("foodCart");
+    const savedCart = localStorage.getItem("selectedItem");
     if (!savedCart) {
       redirectToMenu();
       return;
@@ -385,7 +375,7 @@ const loadCart = () => {
 
     // Validate cart data structure
     if (!cartData || !cartData.items || !Array.isArray(cartData.items)) {
-      showError("Invalid cart data structure");
+      console.log("Invalid cart data structure");
       sessionStorage.removeItem("foodCart");
       redirectToMenu();
       return;
@@ -393,18 +383,19 @@ const loadCart = () => {
 
     // Check if cart belongs to current branch
     if (!props.branch?.id) {
-      showError("Branch data is missing");
+      console.log("Branch data is missing");
       redirectToMenu();
       return;
     }
 
-    if (Number(cartData.branchId) !== Number(props.branch.id)) {
-      showError("Cart belongs to a different branch");
+    if (Number(cartData.items[0].branch_id) !== Number(props.branch.id)) {
+      console.log("Cart belongs to a different branch");
       redirectToMenu();
       return;
     }
 
     cart.value = cartData.items;
+    console.log("cart itmes", cart.value);
     orderType.value = cartData.orderType;
     console.log("Order Type set to:", orderType.value);
   } catch (error) {
@@ -487,16 +478,43 @@ const validateMinimumOrder = () => {
   return true;
 };
 
+[
+  {
+    id: 7,
+    branch_id: 25,
+    category_id: 5,
+    name: "Angelica Soto",
+    description: "Aliquam tempora magn",
+    base_price: "608.00",
+    preparation_time: 15,
+    image_path: "foods/toJ5fj5u90PLbkjhdsnuUjicwbhaivD0UzcoUELi.webp",
+    is_vegetarian: 0,
+    is_spicy: 0,
+    allergens: null,
+    is_available: 1,
+    sort_order: 0,
+    created_at: "2025-06-29 17:05:13",
+    updated_at: "2025-06-29 17:05:13",
+    deleted_at: null,
+    created_by: null,
+    category_name: "Launch",
+    extra_option_names: null,
+    qty: 3,
+    total: 1824,
+    portion: "full",
+    instructions: "mamoon is awesome",
+  },
+];
+
 const completeOrder = () => {
   const orderData = {
     order_type: orderType.value,
     branch_id: props.branch.id,
     items: cart.value.map((item) => ({
-      food_id: item.food.id,
-      quantity: item.quantity,
-      extras: item.extras,
-      special_instructions: item.specialInstructions || "",
-      unit_price: item.food.base_price,
+      food_id: item.id,
+      quantity: item.qty,
+      special_instructions: item.instructions || "",
+      unit_price: item.base_price,
       subtotal: item.total,
     })),
     payment_method:
@@ -535,7 +553,7 @@ const completeOrder = () => {
 
   router.post(route("customer.orders.store"), orderData, {
     onSuccess: (page) => {
-      sessionStorage.removeItem("foodCart");
+      localStorage.removeItem("selectedItem");
       const urlParts = page.url.split("/");
       console.log(urlParts);
       const orderId = urlParts[urlParts.length - 1];

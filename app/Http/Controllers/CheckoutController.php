@@ -96,19 +96,6 @@ class CheckoutController extends Controller
                     'subtotal' => $item['subtotal'],
                     'special_instructions' => $item['special_instructions'] ?? null,
                 ]);
-
-                // Process extras if any
-                if (!empty($item['extras'])) {
-                    foreach ($item['extras'] as $extraId) {
-                        $extra = ExtraOption::findOrFail($extraId);
-                        OrderItemExtra::create([
-                            'order_item_id' => $orderItem->id,
-                            'extra_option_id' => $extra->id,
-                            'quantity' => 1,
-                            'unit_price' => $extra->price,
-                        ]);
-                    }
-                }
             }
 
             // Process payment based on payment method

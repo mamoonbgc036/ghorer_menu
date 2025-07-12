@@ -243,6 +243,8 @@
                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                   >Special Instructions</label>
                   <textarea
+                    v-model="items.instructions"
+                    @input="updateInstruction(items.id, $event.target.value)"
                     rows="2"
                     class="w-full border rounded-lg p-2 text-sm text-gray-800 dark:text-gray-100 dark:bg-gray-700"
                     placeholder="Any special requests?"
@@ -337,7 +339,14 @@ const activeCategory = ref(null);
 const selectedFood = ref(
   JSON.parse(localStorage.getItem("selectedItem"))?.items ?? []
 );
-const cart = ref([]);
+
+const updateInstruction = (id, value) => {
+  let instruction_for_item = selectedFood.value.find((i) => i.id == id);
+  if (instruction_for_item) {
+    instruction_for_item.instructions = value;
+    saveToLocalStorage(selectedFood.value);
+  }
+};
 
 const subTotal = computed(() => {
   let sub_total = selectedFood.value.reduce((sum, item) => sum + item.total, 0);
@@ -363,12 +372,32 @@ const saveToLocalStorage = (selectedItemValue) => {
 
 const handleCheckout = () => {
   isProcessing.value = true;
-  setTimeout(redirect, 3000);
+  setTimeout(function () {
+    router.visit(route("customer.checkout", { branch: props.branch.id }));
+  }, 1000);
 };
+// Modal Functions
+const openFoodModal = (food) => {
+  const check = selectedFood.value.some((item) => item.id === food.id);
 
-const redirect = () => {
-  isProcessing.value = false;
-  router.visit(route("customer.checkout", { branch: props.branch.id }));
+  if (!check) {
+    const selected = {
+      ...food,
+      qty: 1,
+      total: parseInt(food.base_price),
+      portion: "full",
+      instructions: "",
+    };
+    selectedFood.value.push(selected);
+  } else {
+    const preSelectedFood = selectedFood.value.find(
+      (item) => item.id === food.id
+    );
+    preSelectedFood.qty += 1;
+    preSelectedFood.total =
+      preSelectedFood.qty * parseInt(preSelectedFood.base_price);
+  }
+  saveToLocalStorage(selectedFood.value);
 };
 
 const increament = (selectedItemId) => {
@@ -433,29 +462,6 @@ const getImageUrl = (imagePath) => {
   if (!imagePath) return null;
   const cleanPath = imagePath.startsWith("/") ? imagePath.slice(1) : imagePath;
   return `${window.location.origin}/storage/${cleanPath}`;
-};
-
-// Modal Functions
-const openFoodModal = (food) => {
-  const check = selectedFood.value.some((item) => item.id === food.id);
-
-  if (!check) {
-    const selected = {
-      ...food,
-      qty: 1,
-      total: parseInt(food.base_price),
-      portion: "full",
-    };
-    selectedFood.value.push(selected);
-  } else {
-    const preSelectedFood = selectedFood.value.find(
-      (item) => item.id === food.id
-    );
-    preSelectedFood.qty += 1;
-    preSelectedFood.total =
-      preSelectedFood.qty * parseInt(preSelectedFood.base_price);
-  }
-  saveToLocalStorage(selectedFood.value);
 };
 
 // need for clarification
