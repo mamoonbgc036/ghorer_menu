@@ -15,14 +15,14 @@
                 <i class="fas fa-phone mr-2"></i>
                 {{ branch.contact_number }}
               </span>
-              <span
+              <!-- <span
                 :class="[
                                 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
                                 isRestaurantOpen
                                     ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
                                     : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300'
                             ]"
-              >{{ isRestaurantOpen ? 'Open Now' : 'Closed' }}</span>
+              >{{ isRestaurantOpen ? 'Open Now' : 'Closed' }}</span>-->
             </div>
           </div>
 
@@ -48,7 +48,7 @@
       </div>
       <div class="min-h-screen bg-gray-50 dark:bg-gray-900 w-full">
         <div class="container mx-auto px-4 py-8">
-          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
             <!-- Categories Sidebar -->
             <aside class="lg:col-span-1">
               <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg sticky top-24 p-6">
@@ -174,7 +174,7 @@
               </section>
             </main>
 
-            <div class="lg:col-span-1">
+            <div class="lg:col-span-2">
               <div
                 v-for="(items, index) in selectedFood"
                 :key="index"
@@ -196,7 +196,7 @@
                 <div class="mb-4">
                   <label
                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >Select Portion</label>
+                  >Free Option</label>
                   <div class="flex gap-4">
                     <label
                       class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"
@@ -224,6 +224,35 @@
                     </label>
                   </div>
                 </div>
+                <div class="mb-4">
+                  <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  >Extra Option</label>
+                  <div>
+                    <label
+                      class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"
+                    >
+                      <input
+                        type="checkbox"
+                        value="Drings"
+                        class="form-checkbox text-indigo-600"
+                        v-model="items.extra_options"
+                      />
+                      <span>Drings</span>
+                    </label>
+                    <label
+                      class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"
+                    >
+                      <input
+                        type="checkbox"
+                        value="Salad"
+                        class="form-checkbox text-indigo-600"
+                        v-model="items.extra_options"
+                      />
+                      <span>Salad</span>
+                    </label>
+                  </div>
+                </div>
 
                 <!-- Quantity Control -->
                 <div class="flex items-center gap-3 mb-4">
@@ -239,20 +268,6 @@
                       class="text-indigo-600 text-xl font-bold px-2"
                     >+</button>
                   </div>
-                </div>
-
-                <!-- Special Instructions -->
-                <div class="mb-4">
-                  <label
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                  >Special Instructions</label>
-                  <textarea
-                    v-model="items.instructions"
-                    @input="updateInstruction(items.id, $event.target.value)"
-                    rows="2"
-                    class="w-full border rounded-lg p-2 text-sm text-gray-800 dark:text-gray-100 dark:bg-gray-700"
-                    placeholder="Any special requests?"
-                  ></textarea>
                 </div>
 
                 <!-- Total -->

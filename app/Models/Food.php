@@ -20,6 +20,7 @@ class Food extends Model
         'image_path',
         'is_vegetarian',
         'is_spicy',
+        'half_price',
         'allergens',
         'is_available',
         'sort_order'

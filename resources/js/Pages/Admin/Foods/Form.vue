@@ -94,10 +94,10 @@
                 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4"
               >Pricing and Preparation</h3>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Base Price -->
                 <div>
-                  <InputLabel for="base_price" value="Base Price ($)" required />
+                  <InputLabel for="full" value="Price-Full(৳)" required />
                   <TextInput
                     id="base_price"
                     v-model="form.base_price"
@@ -107,6 +107,18 @@
                     required
                   />
                   <InputError :message="form.errors.base_price" class="mt-2" />
+                </div>
+                <div>
+                  <InputLabel for="half_price" value="Price-Half(৳)" required />
+                  <TextInput
+                    id="half_price"
+                    v-model="form.half_price"
+                    type="number"
+                    step="0.01"
+                    class="mt-1 block w-full"
+                    required
+                  />
+                  <InputError :message="form.errors.half_price" class="mt-2" />
                 </div>
 
                 <!-- Preparation Time -->
@@ -363,6 +375,7 @@ const form = useForm({
   category_id: props.food?.category_id ?? "",
   description: props.food?.description ?? "",
   base_price: props.food?.base_price ?? "",
+  half_price: props.food?.half_price ?? "",
   preparation_time: props.food?.preparation_time ?? 30,
   is_vegetarian: props.food?.is_vegetarian ?? false,
   is_spicy: props.food?.is_spicy ?? false,
