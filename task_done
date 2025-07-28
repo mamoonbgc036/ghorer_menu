@@ -1,88 +1,9 @@
 09.07.2025
 add to cart redesign
 
-{
-    "items": [
-        {
-            "id": 1752286444201,
-            "food": {
-                "id": 7,
-                "branch_id": 25,
-                "category_id": 5,
-                "name": "Angelica Soto",
-                "description": "Aliquam tempora magn",
-                "base_price": "608.00",
-                "preparation_time": 15,
-                "image_path": "foods/toJ5fj5u90PLbkjhdsnuUjicwbhaivD0UzcoUELi.webp",
-                "is_vegetarian": false,
-                "is_spicy": false,
-                "allergens": null,
-                "is_available": true,
-                "sort_order": 0,
-                "created_at": "2025-06-29T11:05:13.000000Z",
-                "updated_at": "2025-06-29T11:05:13.000000Z",
-                "deleted_at": null,
-                "created_by": null,
-                "category": {
-                    "id": 5,
-                    "name": "Launch",
-                    "description": "Launch description",
-                    "image_path": "categories/BwEd4SQo0aaiZ43jUY4tgjJ5UpUSacDmLX6ODWHa.jpg",
-                    "sort_order": 1,
-                    "is_active": true,
-                    "created_at": "2025-05-25T11:05:50.000000Z",
-                    "updated_at": "2025-05-25T11:05:50.000000Z",
-                    "deleted_at": null
-                },
-                "extra_options": []
-            },
-            "quantity": 1,
-            "extras": [],
-            "specialInstructions": "",
-            "total": 608,
-            "type": "collection"
-        },
-        {
-            "id": 1752286447640,
-            "food": {
-                "id": 6,
-                "branch_id": 25,
-                "category_id": 6,
-                "name": "Birani",
-                "description": "dfafdfd",
-                "base_price": "200.00",
-                "preparation_time": 20,
-                "image_path": "foods/Uvf0DqNBCVTWVGRNKWrQZKKiBPcQrSjkb5J0ZKp9.jpg",
-                "is_vegetarian": false,
-                "is_spicy": false,
-                "allergens": null,
-                "is_available": true,
-                "sort_order": 0,
-                "created_at": "2025-06-29T09:04:10.000000Z",
-                "updated_at": "2025-06-29T09:04:10.000000Z",
-                "deleted_at": null,
-                "created_by": null,
-                "category": {
-                    "id": 6,
-                    "name": "Dinner edited",
-                    "description": "Duis voluptatem non",
-                    "image_path": "categories/nCO3d7SGaC5LPh25QgjdxjMvW3TGH7iTzspNGo4Q.jpg",
-                    "sort_order": 50,
-                    "is_active": true,
-                    "created_at": "2025-05-25T14:29:59.000000Z",
-                    "updated_at": "2025-07-06T12:43:48.000000Z",
-                    "deleted_at": null
-                },
-                "extra_options": []
-            },
-            "quantity": 1,
-            "extras": [],
-            "specialInstructions": "",
-            "total": 200,
-            "type": "collection"
-        }
-    ],
-    "branchId": 25,
-    "orderType": "collection",
-    "lastUpdated": "2025-07-12T02:14:07.641Z"
-}
+28.07.2025
+make branch same as landing page
+registration 
+dollar sign
+
+filteredBranches

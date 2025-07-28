@@ -68,11 +68,9 @@ Route::get('/welcome', function () {
 });
 
 Route::get('/', function (Request $request) {
-    $userLat = $request->input('latitude');
+        $userLat = $request->input('latitude');
         $userLng = $request->input('longitude');
-
         $query = Branch::query()->active();
-
         if ($userLat && $userLng) {
             $query->withDistance($userLat, $userLng)
                 ->orderBy('distance');

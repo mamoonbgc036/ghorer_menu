@@ -190,7 +190,10 @@
                 class="flex justify-between text-gray-600 dark:text-gray-300"
               >
                 <span>Delivery Fee</span>
-                <span>{{ formatCurrency(deliveryFee) }}</span>
+                <span>
+                  <span style="font-size: 30px;">৳</span>
+                  {{ deliveryFee }}
+                </span>
               </div>
               <div class="border-t border-gray-200 dark:border-gray-700 pt-3">
                 <div
@@ -639,9 +642,10 @@ const deleteAddress = (address) => {
 
 // Format currency helper
 const formatCurrency = (value) => {
-  return new Intl.NumberFormat("en-GB", {
+  return new Intl.NumberFormat("en-BD", {
     style: "currency",
-    currency: "GBP",
+    currency: "BDT",
+    minimumFractionDigits: 2,
   }).format(Number(value));
 };
 </script>

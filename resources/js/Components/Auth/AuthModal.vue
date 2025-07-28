@@ -59,6 +59,12 @@
                   class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
                   :disabled="loginForm.processing"
                 >Sign In</button>
+                <div class="text-center text-sm text-gray-600 dark:text-gray-400">
+                  <a
+                    href="/register"
+                    class="text-sm text-orange-600 hover:text-orange-500"
+                  >Don't have account? sign up</a>
+                </div>
               </div>
             </form>
           </DialogPanel>
